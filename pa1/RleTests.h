@@ -30,6 +30,7 @@ public:
 		TEST_CASE_DESCRIBE(tooLongPositiveRuns, "Too long positive runs test"); // A really long positive run that goes greater than the max run size
 		TEST_CASE_DESCRIBE(tooLongNegativeRuns, "Too long negative runs test"); // A really long negative run that goes greater than the max run size
 		TEST_CASE_DESCRIBE(singleCharAtEndRuns, "A single Character at the end of the run"); //Like aaaaaaaab
+		TEST_CASE_DESCRIBE(negative128LengthRuns, "128 unique characters run");
 	}
 	
 	void testBasicPositiveRuns()
@@ -51,8 +52,8 @@ public:
 	void testLongPositiveRuns()
 	{
 		char test[] = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-			"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
-		char expected[] = "\x50" "a"; // 80a
+			"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb";
+		char expected[] = "\x28" "a" "\x28" "b"; // 40a 40b
 		runCompressionTest(test, sizeof(test) - 1, expected, sizeof(expected) - 1);
 	}
 
@@ -69,8 +70,8 @@ public:
 	{
 		char test[] = "aaaaaaaaaaqwertyuiopbbbbbbbbbbqwertyuiop"
 			"aaaaaaaaaaqwertyuiopbbbbbbbbbbqwertyuiop";
-		char expected[] = "\x14" "a" "\xec" "qwertyuiop" "\x14" "b" "\xec" "qwertyuiop"// 10a -10 10b -10
-			"\x14" "a" "\xec" "qwertyuiop" "\x14" "b" "\xec" "qwertyuiop"; // // 10a -10 10b -10
+		char expected[] = "\x0A" "a" "\xf6" "qwertyuiop" "\x0A" "b" "\xf6" "qwertyuiop"// 10a -10 10b -10
+			"\x0A" "a" "\xf6" "qwertyuiop" "\x0A" "b" "\xf6" "qwertyuiop"; // // 10a -10 10b -10
 		runCompressionTest(test, sizeof(test) - 1, expected, sizeof(expected) - 1);
 	}
 
@@ -79,7 +80,7 @@ public:
 		char test[] = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 			"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 			"aaaaaaaaaaaaaaaaaaaa";
-		char expected[] = "\x7f" "a" "\x0d" "a"; //140a
+		char expected[] = "\x7f" "a" "\x0d" "a"; //127a 13a
 		runCompressionTest(test, sizeof(test) - 1, expected, sizeof(expected) - 1);
 	}
 
@@ -100,6 +101,17 @@ public:
 			"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 			"aaaaaab";
 		char expected[] = "\x7e" "a" "\x01" "b"; // 126a 1b
+		runCompressionTest(test, sizeof(test) - 1, expected, sizeof(expected) - 1);
+	}
+
+	void negative128LengthRuns()
+	{
+		char test[] = "qwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnm"
+			"qwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnm"
+			"qwertyuiopasdfghjklzxcvb";
+		char expected[] = "\x81" "qwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnm" //-127
+			"qwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnm"
+			"qwertyuiopasdfghjklzxcv" "\x01" "b";								// 1b
 		runCompressionTest(test, sizeof(test) - 1, expected, sizeof(expected) - 1);
 	}
 };

@@ -1,5 +1,5 @@
-/*
- * Copyright (c) 2003-2004  Pau Arumí & David García
+ï»¿/*
+ * Copyright (c) 2003-2004  Pau Arum?& David GarcéŸ†
  *
  *
  * This program is free software; you can redistribute it and/or modify
@@ -425,7 +425,7 @@ public:
 };
 
 /** 
- * Macro a usar després de cada classe de test
+ * Macro a usar despré–Ÿ de cada classe de test
  */
 #define REGISTER_FIXTURE( ConcreteTestFixture ) \
 \
