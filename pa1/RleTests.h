@@ -30,7 +30,9 @@ public:
 		TEST_CASE_DESCRIBE(tooLongPositiveRuns, "Too long positive runs test"); // A really long positive run that goes greater than the max run size
 		TEST_CASE_DESCRIBE(tooLongNegativeRuns, "Too long negative runs test"); // A really long negative run that goes greater than the max run size
 		TEST_CASE_DESCRIBE(singleCharAtEndRuns, "A single Character at the end of the run"); //Like aaaaaaaab
-		TEST_CASE_DESCRIBE(negative128LengthRuns, "128 unique characters run");
+		TEST_CASE_DESCRIBE(negative128LengthRuns, "128 alternating characters run");
+		TEST_CASE_DESCRIBE(edgeCase1, "EdgeCase aabccdee run");
+		//TEST_CASE_DESCRIBE(edgeCase2, "EdgeCase abababab run");
 	}
 	
 	void testBasicPositiveRuns()
@@ -91,7 +93,7 @@ public:
 			"qwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnm";
 		char expected[] = "\x81" "qwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnm" // -127
 			"qwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnm"
-			"qwertyuiopasdfghjklzxcv" "xe3" "bnmqwertyuiopasdfghjklzxcvbnm"; //-29
+			"qwertyuiopasdfghjklzxcv" "\xe3" "bnmqwertyuiopasdfghjklzxcvbnm"; //-29
 		runCompressionTest(test, sizeof(test) - 1, expected, sizeof(expected) - 1);
 	}
 
@@ -111,9 +113,24 @@ public:
 			"qwertyuiopasdfghjklzxcvb";
 		char expected[] = "\x81" "qwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnm" //-127
 			"qwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnm"
-			"qwertyuiopasdfghjklzxcv" "\x01" "b";								// 1b
+			"qwertyuiopasdfghjklzxcv" "\xff" "b";								// -1b
 		runCompressionTest(test, sizeof(test) - 1, expected, sizeof(expected) - 1);
 	}
+	void edgeCase1()
+	{
+		char test[] = "aabccdeef";
+		char expected[] = "\x02" "a" "\x01" "b" "\x02" "c" "\x01" "d"
+			"\x02" "e" "\x01" "f";
+		runCompressionTest(test, sizeof(test) - 1, expected, sizeof(expected) - 1);
+	}
+	/*
+	void edgeCase2()
+	{
+		char test[] = "abababab";
+		char expected[] = "\xf8" "abababab";
+		runCompressionTest(test, sizeof(test) - 1, expected, sizeof(expected) - 1);
+	}
+	*/
 };
 
 class DecompressionTests : public TestFixture<DecompressionTests>
@@ -121,8 +138,16 @@ class DecompressionTests : public TestFixture<DecompressionTests>
 public:
 	TEST_FIXTURE_DESCRIBE(DecompressionTests, "Testing Decompression...")
 	{
+		
 		TEST_CASE_DESCRIBE(testBasicPositiveRuns, "Basic positive run test");
 		// TODO: Add more Decompression test  cases
+		
+		TEST_CASE_DESCRIBE(testBasicNegativeRuns, "Basic negative run test");
+		TEST_CASE_DESCRIBE(testAlternatingRuns, "Alternating positive/negative runs test");
+		
+		TEST_CASE_DESCRIBE(edgeCase1, "EdgeCase aabccdee run");
+		TEST_CASE_DESCRIBE(negative128LengthRuns, "128 alternating characters run");
+		
 	}
 	
 	void testBasicPositiveRuns()
@@ -132,6 +157,41 @@ public:
 		
 		runDecompressionTest(test, sizeof(test) - 1, expected, sizeof(expected) - 1);
 	}
+	
+	
+	void testBasicNegativeRuns()
+	{
+		char test[] = "\xe2" "qazwsxedcqazwsxedcqazwsxedcqaz";
+		char expected[] = "qazwsxedcqazwsxedcqazwsxedcqaz";
+		runDecompressionTest(test, sizeof(test) - 1, expected, sizeof(expected) - 1);
+	}
+	
+	
+	void testAlternatingRuns()
+	{
+		char test[] = "\x05" "q" "\xfa" "wsxedc" "\x05" "r" "\xfa" "wsxedc" "\x05" "a";
+		char expected[] = "qqqqqwsxedcrrrrrwsxedcaaaaa";
+		runDecompressionTest(test, sizeof(test) - 1, expected, sizeof(expected) - 1);
+	}
+	
+	void edgeCase1()
+	{
+		char test[] = "\x02" "e" "\x01" "d" "\x02" "c" "\x01" "r" "\x02" "f" "\x01" "v"
+			"\x02" "t" "\x01" "g";
+		char expected[] = "eedccrffvttg";
+		
+	}
+	void negative128LengthRuns()
+	{
+		char test[] = "\x81" "qwertqwertqwertyuiopqwertqwertqwertyuiopqwertqwertqwertyuiop"
+			"qwertqwertqwertyuiopqwertqwertqwertyuiopqwertqwertqwertyuiop"
+			"qwertqw" "\xf3" "ertqwertyuiop";
+		char expected[] = "qwertqwertqwertyuiopqwertqwertqwertyuiopqwertqwertqwertyuiop"
+			"qwertqwertqwertyuiopqwertqwertqwertyuiopqwertqwertqwertyuiop"
+			"qwertqwertqwertyuiop";
+		runDecompressionTest(test, sizeof(test) - 1, expected, sizeof(expected) - 1);
+	}
+	
 };
 
 REGISTER_FIXTURE(CompressionTests);
