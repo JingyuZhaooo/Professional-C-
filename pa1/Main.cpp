@@ -32,14 +32,14 @@ int main(int argc, char* argv[])
 		{
 			std::cout << "test Create Archive" << std::endl;
 			RleFile file;
-			file.CreateArchive(fileName);
+			file.CreateArchive(argv[1]);
 			
 		}
 		else									// decompress the file
 		{
 			std::cout << "test Extract Archive" << std::endl;
 			RleFile file;
-			file.ExtractArchive(fileName);
+			file.ExtractArchive(argv[1]);
 		}
 		
 	}

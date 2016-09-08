@@ -69,39 +69,41 @@ void RleFile::ExtractArchive(const std::string& source)
 		file.seekg(0, std::ios::beg); // Seek back to start of file
 		file.read(memblock, size);
 		file.close();
-	}
-	// grab the header
-	mHeader.sig[0] = memblock[0];
-	mHeader.sig[1] = memblock[1];
-	mHeader.sig[2] = memblock[2];
-	mHeader.sig[3] = memblock[3];
 
-	//check the header
-	if (mHeader.sig[0] == 'R' && mHeader.sig[1] == 'L' && mHeader.sig[2] == 'E' && mHeader.sig[3] == 0x01)
-	{
-		mHeader.fileSize = *(reinterpret_cast<int*>(&memblock[4]));
-		mHeader.fileNameLength = *(reinterpret_cast<char*>(&memblock[8]));  //grab the length of the file name
-		for (int i = 1; i <= mHeader.fileNameLength; i++)
+
+		// grab the header
+		mHeader.sig[0] = memblock[0];
+		mHeader.sig[1] = memblock[1];
+		mHeader.sig[2] = memblock[2];
+		mHeader.sig[3] = memblock[3];
+	
+
+
+		//check the header
+		if (mHeader.sig[0] == 'R' && mHeader.sig[1] == 'L' && mHeader.sig[2] == 'E' && mHeader.sig[3] == 0x01)
 		{
-			mHeader.fileName += memblock[8 + i];
-		}
-		mData.Decompress(memblock + 9 + mHeader.fileNameLength, static_cast<size_t>(size) - 9 - mHeader.fileNameLength, mHeader.fileSize);
+			mHeader.fileSize = *(reinterpret_cast<int*>(&memblock[4]));
+			mHeader.fileNameLength = *(reinterpret_cast<char*>(&memblock[8]));  //grab the length of the file name
+			for (int i = 1; i <= mHeader.fileNameLength; i++)
+			{
+				mHeader.fileName += memblock[8 + i];
+			}
+			mData.Decompress(memblock + 9 + mHeader.fileNameLength, static_cast<size_t>(size) - 9 - mHeader.fileNameLength, mHeader.fileSize);
 
 
-		// Open the file for output, in binary mode, and overwrite an existing file
-		std::ofstream arc(mHeader.fileName, std::ios::out | std::ios::binary | std::ios::trunc);
-		if (arc.is_open())
-		{
-			// Use arc.write function to write data here // where to use c_str??
-			arc.write(mData.mData, mData.mSize);
-			std::cout << "1" << std::endl;
+			// Open the file for output, in binary mode, and overwrite an existing file
+			std::ofstream arc(mHeader.fileName, std::ios::out | std::ios::binary | std::ios::trunc);
+			if (arc.is_open())
+			{
+				// Use arc.write function to write data here // where to use c_str??
+				arc.write(mData.mData, mData.mSize);
+			}
+			delete[] memblock;
 		}
-		delete[] memblock;
 
 	}
 	else
 	{
 		std::cout << "Invalid file" << std::endl;
 	}
-
 }

@@ -81,7 +81,6 @@ void RleData::Compress(const char* input, size_t inSize)
 			{
 				if ((index - size - 1) == -1)
 				{
-					std::cout << "asdasdsas" << std::endl;
 					mData[mSize] = 1;
 					mSize += 1;
 					mData[mSize] = input[index];
@@ -136,11 +135,6 @@ void RleData::Compress(const char* input, size_t inSize)
 
 	}
 	
-
-
-
-
-
 
 
 	/*
