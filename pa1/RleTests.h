@@ -34,7 +34,7 @@ public:
 		TEST_CASE_DESCRIBE(edgeCase1, "EdgeCase aabccdee run");
 		TEST_CASE_DESCRIBE(edgeCase2, "EdgeCase abababab run");
 		TEST_CASE_DESCRIBE(edgeCase3, "EdgeCase aabbccddee run");
-		TEST_CASE_DESCRIBE(edgeCase4, "-127");
+		TEST_CASE_DESCRIBE(edgeCase4, "abbbbbbbbbb");
 	}
 	
 	void testBasicPositiveRuns()
@@ -141,8 +141,8 @@ public:
 	}
 	void edgeCase4()
 	{
-		char test[] = "qwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyu";
-		char expected[] = "\x81" "qwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyu";
+		char test[] = "abbbbbbbbbb";
+		char expected[] = "\x01" "a" "\x0A" "b";
 		runCompressionTest(test, sizeof(test) - 1, expected, sizeof(expected) - 1);
 	}
 };

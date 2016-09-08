@@ -44,7 +44,7 @@ void RleFile::CreateArchive(const std::string& source)
 			arc.write(mHeader.sig, 4);
 			arc.write(reinterpret_cast<char*>(&(mHeader.fileSize)), 4);
 			arc.write(reinterpret_cast<char*>(&(mHeader.fileNameLength)), 1);
-			arc.write(reinterpret_cast<char*>(&(mHeader.fileName)), source.length());
+			arc.write(mHeader.fileName.c_str(), mHeader.fileNameLength);
 			arc.write(mData.mData, mData.mSize);
 		}
 

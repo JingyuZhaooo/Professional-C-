@@ -104,18 +104,28 @@ void RleData::Compress(const char* input, size_t inSize)
 
 			else if (input[size] != input[size + 1])
 			{
-				if (size == 0)								// If starts from the beginning, it is a negative run
+				if (size == 0 && input[size + 1] != input[size + 2])								// If starts from the beginning, it is a negative run
 				{
 					sign = false;
 					index = 0;
+				}
+				else if (size == 0 && input[size + 1] == input[size + 2])
+				{
+				
+					mData[mSize] = 1;
+					mSize += 1;
+					mData[mSize] = input[size];
+					mSize += 1;
+					index += 1;
+					
 				}
 				else if (size != 0 && sign == true && input[size + 1] != input[size + 2]) //switch from a positive run to a negative run, index already set when the positive run ends
 				{
 					sign = false;
 				}
-			
 				else if (sign == true && (size + 1 == inSize - 1))					// the file ends with AAB
 				{
+					
 					mData[mSize] = -2;
 					mSize += 1;
 					mData[mSize] = input[size];
