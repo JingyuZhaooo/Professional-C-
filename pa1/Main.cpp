@@ -27,19 +27,19 @@ int main(int argc, char* argv[])
 		// TODO: Get the file name from argv[1] and either compress/decompress
 		std::string fileName = argv[1];
 		int length = strlen(argv[1]);
-		std::cout << length << std::endl;
 		std::string suffix = ".rl1";
-		if (fileName.find(suffix) == length - 4) // found the suffix, compress file
+		if (fileName.find(suffix) != length - 4) // didn't find the suffix, compress file
 		{
-				
+			std::cout << "test Create Archive" << std::endl;
 			RleFile file;
-			file.CreateArchive(argv[1]);
+			file.CreateArchive(fileName);
 			
 		}
-		else if (fileName.find(suffix) == std::string::npos || fileName.find(suffix) != length - 4) // decompress the file
+		else									// decompress the file
 		{
+			std::cout << "test Extract Archive" << std::endl;
 			RleFile file;
-			file.ExtractArchive(argv[1]);
+			file.ExtractArchive(fileName);
 		}
 		
 	}

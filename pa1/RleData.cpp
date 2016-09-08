@@ -3,129 +3,218 @@
 #include <math.h> 
 
 void RleData::Compress(const char* input, size_t inSize)
-{/*
+{
+	// A run ends when we counter two adjacent elements that are different
 	delete[] mData;
 	mSize = 0;
 	mData = new char[2 * inSize];
-	size_t maxSize = MaxRunSize();
+	char maxSize = static_cast<char>(MaxRunSize());
 
-	int runLength = 0;
+	size_t index = 0; // index where every run starts at
+	bool sign = true; // to indicate whether it is a positive or negative sign
 
-	for (size_t counter = 0; counter < inSize; counter++)
+	for (size_t size = 0; size < inSize - 2; size++)
 	{
-
-	}
-
-
-
-
-
-	unsigned int positiveRunLength = 1;
-	int negativeRunLength = 1;
-	size_t runStartingIndex = 0;
-	bool sign = true; // true means positive run, false means negative run
-	bool turningPoint = false; // indicate whether it is a turning point between a positive run and a negative run
-	char previous = input[0]; //Get the first element (head)
-	size_t negativeRunStartIndex = 0; // index where the negative run starts
-	int beginning = 0; // to indicate the run starts from the beginning
-
-	if (inSize == 1) // case which there is only one char in the input
-	{
-		mData[mSize] = 1;
-		mSize += 1;
-		mData[mSize] = previous;
-	}
-	if (inSize > 1) // if there is more than one char in input
-	{ 
-
-
-		for (size_t size = 1; size < inSize; size++)
-		{											// compare the current element to the previous element
-			beginning++;
-			if (input[size] == previous)			// if the current element == previous element, we have a positive run increasing
+		//Positive runs
+		if (input[size] == input[size + 1])
+		{
+			sign = true;
+			if (input[size + 1] != input[size + 2])
 			{
-				sign = true;			// in a positive run
-				positiveRunLength += 1;
-				if (size == inSize - 1) // if we reach the end
+				while ((size + 2 - index) > 127)
 				{
-					mData[mSize] = positiveRunLength;
+					mData[mSize] = maxSize;
 					mSize += 1;
-					mData[mSize] = previous;
+					mData[mSize] = input[size];
+					mSize += 1;
+					index += 127;
 				}
-				if (turningPoint == true) // we switch from a positive run to another positive run
+				mData[mSize] = static_cast<char>(size + 2 - index);
+				mSize += 1;
+				mData[mSize] = input[size];
+				mSize += 1;
+				index = size + 2;
+				if (size + 2 == inSize - 1)
 				{
-					turningPoint = false; // set turning point back to false : it is not turning 
-					sign = true;			// in a positive run
+					mData[mSize] = 1;
+					mSize += 1;
+					mData[mSize] = input[size + 2];
 				}
-				if (sign == false) //have switched from negative to positive
+			}
+			if (input[size + 1] == input[size + 2] && (size + 3) == inSize)
+			{
+				while ((size + 3 - index) > 127)
 				{
+					mData[mSize] = maxSize;
+					mSize += 1;
+					mData[mSize] = input[size];
+					mSize += 1;
+					index += 127;
+				}
+				mData[mSize] = static_cast<char>(size + 3 - index);
+				mSize += 1;
+				mData[mSize] = input[size];
+			}
+		}
+
+		else if (input[size] != input[size + 1])
+		{
+			if (size == 0)
+			{
+				sign = false;
+				index = 0;
+			}
+			else if (size != 0 && sign == true && input[size + 1] != input[size + 2])
+			{
+				sign = false;
+			}
+			
+			else if (sign == true && (size + 1 == inSize - 1))
+			{
+				mData[mSize] = -2;
+				mSize += 1;
+				mData[mSize] = input[size];
+				mSize += 1;
+				mData[mSize] = input[size + 1];
+			}
+			else if (sign == false && input[size + 1] == input[size + 2]) // aabcc
+			{
+				if ((index - size - 1) == -1)
+				{
+					std::cout << "asdasdsas" << std::endl;
+					mData[mSize] = 1;
+					mSize += 1;
+					mData[mSize] = input[index];
+					mSize += 1;
+					index += 1;
 					sign = true;
-					negativeRunLength -= 1; // subtract the ectra count of char in the negative run
-					mData[mSize] = -negativeRunLength;
+					continue;
+				}
+				while ((size + 1 - index) > 127)
+				{
+					mData[mSize] = -127;
 					mSize += 1;
-					for (size_t i = negativeRunStartIndex; i < size - 1; i++)
+					for (size_t j = 0; j < MaxRunSize(); j++)
 					{
-						mData[mSize] = input[i];
+						mData[mSize] = input[index + j];
 						mSize += 1;
 					}
+					index += 127;
 				}
-			}
-
-
-			else if (input[size] != previous)	// we can only identify where the run stops at the point where adjacent elements are different
-			{
-				if (beginning == 1)
-				{
-					sign = false;
-					negativeRunLength += 1;
-					negativeRunStartIndex = 0;
-					break;
-				}
-				if (turningPoint == false && sign == true) // a positive run just ends, and we need to record that run
-				{
-					mData[mSize] = positiveRunLength;
-					mSize += 1;
-					mData[mSize] = previous;
-					mSize += 1;
-					positiveRunLength = 1; // reset the length of positive run
-					turningPoint = true; // we don't know the coming run is positive or negative yet, just set it to true first
-				}
-				else if (turningPoint == true && sign == true) // switching from positive to negative
-				{
-					sign = false; // set the sign to negative
-					negativeRunLength += 1;
-					turningPoint = false;
-					negativeRunStartIndex = size - 1;
-				}
-				else if (turningPoint == false && sign == false) // in the middle of a negative run
-				{
-					negativeRunLength += 1;
-				}
-				
-				else if (size == inSize - 1 && sign == true) // AAAAAAAAAB
-				{
-
-				}
-			}
-			previous = input[size]; // set the previous to the current element
-
-			//EdgeCases:
-			if (size == inSize - 1 && sign == false) // a negative run reaches the end
-			{
-				std::cout << "asdffvxc" << std::endl;
-				mData[mSize] = -negativeRunLength;
+				mData[mSize] = static_cast<char>(index - size - 1);
 				mSize += 1;
-				for (unsigned i = negativeRunStartIndex; i < inSize; i++)
+				for (size_t i = index; i <= size; i++)
+				{
+					mData[mSize] = input[i];
+					mSize += 1;
+				}
+				index = size + 1;
+			}
+			else if (sign == false && input[size + 1] != input[size + 2] && (size + 2 == inSize - 1))
+			{
+				while ((size + 3 - index) > 127)
+				{
+					mData[mSize] = -127;
+					mSize += 1;
+					for (size_t j = 0; j < MaxRunSize(); j++)
+					{
+						mData[mSize] = input[index + j];
+						mSize += 1;
+					}
+					index += 127;
+				}
+				mData[mSize] = static_cast<char>(index - size - 3);
+				mSize += 1;
+				for (size_t i = index; i < size + 3; i++)
 				{
 					mData[mSize] = input[i];
 					mSize += 1;
 				}
 			}
-			
 		}
 
+
 	}
+	
+
+
+
+
+
+
+
+	/*
+		for (size_t size = 2; size < inSize; size++)
+		{
+			if (input[size] == input[size - 1]) // if it is AA
+			{
+				if (input[size - 2] != input[size - 1]) // if it is B before AA
+				{
+					
+					if (sign == true)					// if it is BAA and B is the end of a positive run
+					{
+						mData[mSize] = static_cast<char>(size - 1 - index);
+						mSize += 1;
+						mData[mSize] = input[size - 2];
+						mSize += 1;
+						index = size - 1;
+					}
+					else if (sign == false)								// if it is BAA and B is the end of a negative run
+					{
+						mData[mSize] = static_cast<char>(1 + index - size);
+						mSize += 1;
+						for (size_t i = index; i < size - 1; i++)
+						{
+							mData[mSize] = input[i];
+							mSize += 1;
+						}
+						index = size - 1;
+					}
+				}
+				if (size = inSize - 1)								//ABB and we reach the end: add the positive run of 2B's
+				{
+					mData[mSize] = 2;
+					mSize += 1;
+					mData[mSize] = input[size];
+					mSize += 1;
+				}
+				sign = true;
+			}
+			else if (input[size] != input[size - 1]) // AB
+			{
+				
+				if (input[size - 2] == input[size - 1] && size == inSize - 1) // AAB at the end
+				{ 
+					mData[mSize] = static_cast<char>(size - index);
+					mSize += 1;
+					mData[mSize] = input[size - 1];
+					mSize += 1;
+					mData[mSize] = 1;
+					mData[mSize] = input[size];
+				}
+				
+				if (input[size - 2] != input[size - 1])
+				{
+					sign = false;
+					if (size == inSize - 1)				// ABC at the end
+					{
+						mData[mSize] = static_cast<char>(1 + index - size);
+						mSize += 1;
+						for (size_t i = index; i < size; i++)
+						{
+							mData[mSize] = input[i];
+							mSize += 1;
+						}
+					}
+				}
+			}
+		}
 	*/
+}
+
+
+/*
+
 	
 	delete[] mData;
 	mSize = 0;
@@ -371,13 +460,21 @@ void RleData::Compress(const char* input, size_t inSize)
 			
 		}
 		//edge cases
-		else if (input[size] != input[size + 1] && input[size + 1] != input[size + 2] && input[size] == input[size] + 2) // abababab
+		else if (input[size] != input[size + 1] && input[size + 1] != input[size + 2] && input[size] == input[size] + 2) // ABA
 		{
-			mData[mSize] = 1;
-			mSize += 1;
-			mData[mSize] = input[size + 1];
-			mSize += 1;
-			positiveRunLength = 1;
+			if (input[size - 1] == input[size] && input[size + 2] == input[size + 3])
+			{
+				mData[mSize] = 1;
+				mSize += 1;
+				mData[mSize] = input[size + 1];
+				mSize += 1;
+				positiveRunLength = 1;
+			}
+			else if (input[size - 1] != input[size] || input[size + 2] != input[size + 3])
+			{
+				negativeRunLength += 1;
+			}
+		
 		}
 		
 	}
@@ -385,6 +482,7 @@ void RleData::Compress(const char* input, size_t inSize)
 	}
 	
 }
+*/
 
 void RleData::Decompress(const char* input, size_t inSize, size_t outSize)
 {
@@ -405,7 +503,7 @@ void RleData::Decompress(const char* input, size_t inSize, size_t outSize)
 			index = index + 2;
 		}
 		else if (count < 0)
-		{ 
+		{
 			count *= (-1);
 			for (int i = 1; i <= count; i++)
 			{
@@ -416,6 +514,7 @@ void RleData::Decompress(const char* input, size_t inSize, size_t outSize)
 		}
 	}
 }
+
 
 std::ostream& operator<< (std::ostream& stream, const RleData& rhs)
 {

@@ -24,7 +24,7 @@ public:
 	{
 		TEST_CASE_DESCRIBE(testBasicPositiveRuns, "Basic positive runs test");
 		// TODO: Add more Compression test cases
-		TEST_CASE_DESCRIBE(testLongPositiveRuns, "Long Positive runs test"); // A long positive run
+		TEST_CASE_DESCRIBE(testLongPositiveRuns, "Long positive runs test"); // A long positive run
 		TEST_CASE_DESCRIBE(testLongNegativeRuns, "Long negative runs test"); // A long negative run
 		TEST_CASE_DESCRIBE(testAlternatingRuns, "Alternating positive/negative runs test"); // An alternating positive/negative runs
 		TEST_CASE_DESCRIBE(tooLongPositiveRuns, "Too long positive runs test"); // A really long positive run that goes greater than the max run size
@@ -32,7 +32,7 @@ public:
 		TEST_CASE_DESCRIBE(singleCharAtEndRuns, "A single Character at the end of the run"); //Like aaaaaaaab
 		TEST_CASE_DESCRIBE(negative128LengthRuns, "128 alternating characters run");
 		TEST_CASE_DESCRIBE(edgeCase1, "EdgeCase aabccdee run");
-		//TEST_CASE_DESCRIBE(edgeCase2, "EdgeCase abababab run");
+		TEST_CASE_DESCRIBE(edgeCase2, "EdgeCase abababab run");
 	}
 	
 	void testBasicPositiveRuns()
@@ -123,14 +123,14 @@ public:
 			"\x02" "e" "\x01" "f";
 		runCompressionTest(test, sizeof(test) - 1, expected, sizeof(expected) - 1);
 	}
-	/*
+	
 	void edgeCase2()
 	{
 		char test[] = "abababab";
 		char expected[] = "\xf8" "abababab";
 		runCompressionTest(test, sizeof(test) - 1, expected, sizeof(expected) - 1);
 	}
-	*/
+	
 };
 
 class DecompressionTests : public TestFixture<DecompressionTests>
