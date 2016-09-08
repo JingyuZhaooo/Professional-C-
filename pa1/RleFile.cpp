@@ -23,7 +23,7 @@ void RleFile::CreateArchive(const std::string& source)
 
 		mData.Compress(memblock, static_cast<size_t>(size)); // call the compress function and pass in the parameters
 		int comptressedSize = mData.mSize;
-		int	percent = 100 * (static_cast<int>(size) - comptressedSize) / static_cast<int>(size); // calculate the compression percentage
+		int	percent = 100 * (comptressedSize) / static_cast<int>(size); // calculate the compression percentage
 		std::cout << percent << "% compression was achieved!" << std::endl; 
 
 		// Write the header
@@ -89,7 +89,6 @@ void RleFile::ExtractArchive(const std::string& source)
 				mHeader.fileName += memblock[8 + i];
 			}
 			mData.Decompress(memblock + 9 + mHeader.fileNameLength, static_cast<size_t>(size) - 9 - mHeader.fileNameLength, mHeader.fileSize);
-
 
 			// Open the file for output, in binary mode, and overwrite an existing file
 			std::ofstream arc(mHeader.fileName, std::ios::out | std::ios::binary | std::ios::trunc);

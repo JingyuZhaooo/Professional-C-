@@ -33,6 +33,8 @@ public:
 		TEST_CASE_DESCRIBE(negative128LengthRuns, "128 alternating characters run");
 		TEST_CASE_DESCRIBE(edgeCase1, "EdgeCase aabccdee run");
 		TEST_CASE_DESCRIBE(edgeCase2, "EdgeCase abababab run");
+		TEST_CASE_DESCRIBE(edgeCase3, "EdgeCase aabbccddee run");
+		TEST_CASE_DESCRIBE(edgeCase4, "-127");
 	}
 	
 	void testBasicPositiveRuns()
@@ -131,6 +133,18 @@ public:
 		runCompressionTest(test, sizeof(test) - 1, expected, sizeof(expected) - 1);
 	}
 	
+	void edgeCase3()
+	{
+		char test[] = "aabbccddee";
+		char expected[] = "\x02" "a" "\x02" "b" "\x02" "c" "\x02" "d" "\x02" "e";
+		runCompressionTest(test, sizeof(test) - 1, expected, sizeof(expected) - 1);
+	}
+	void edgeCase4()
+	{
+		char test[] = "qwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyu";
+		char expected[] = "\x81" "qwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyu";
+		runCompressionTest(test, sizeof(test) - 1, expected, sizeof(expected) - 1);
+	}
 };
 
 class DecompressionTests : public TestFixture<DecompressionTests>

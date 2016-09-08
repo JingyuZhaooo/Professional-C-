@@ -30,7 +30,6 @@ int main(int argc, char* argv[])
 		std::string suffix = ".rl1";
 		if (fileName.find(suffix) != length - 4) // didn't find the suffix, compress file
 		{
-			std::cout << "test Create Archive" << std::endl;
 			RleFile file;
 			file.CreateArchive(argv[1]);
 			

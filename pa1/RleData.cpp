@@ -13,131 +13,178 @@ void RleData::Compress(const char* input, size_t inSize)
 	size_t index = 0; // index where every run starts at
 	bool sign = true; // to indicate whether it is a positive or negative sign
 
-	for (size_t size = 0; size < inSize - 2; size++)
+	// Special cases
+	if (inSize == 1)
 	{
-		//Positive runs
-		if (input[size] == input[size + 1])
+		mData[mSize] = 1;
+		mSize += 1;
+		mData[mSize] = input[0];
+	}
+	else if (inSize == 2)
+	{
+		if (input[0] == input[1])
 		{
-			sign = true;
-			if (input[size + 1] != input[size + 2])
-			{
-				while ((size + 2 - index) > 127)
-				{
-					mData[mSize] = maxSize;
-					mSize += 1;
-					mData[mSize] = input[size];
-					mSize += 1;
-					index += 127;
-				}
-				mData[mSize] = static_cast<char>(size + 2 - index);
-				mSize += 1;
-				mData[mSize] = input[size];
-				mSize += 1;
-				index = size + 2;
-				if (size + 2 == inSize - 1)
-				{
-					mData[mSize] = 1;
-					mSize += 1;
-					mData[mSize] = input[size + 2];
-				}
-			}
-			if (input[size + 1] == input[size + 2] && (size + 3) == inSize)
-			{
-				while ((size + 3 - index) > 127)
-				{
-					mData[mSize] = maxSize;
-					mSize += 1;
-					mData[mSize] = input[size];
-					mSize += 1;
-					index += 127;
-				}
-				mData[mSize] = static_cast<char>(size + 3 - index);
-				mSize += 1;
-				mData[mSize] = input[size];
-			}
+			mData[mSize] = 2;
+			mSize += 1;
+			mData[mSize] = input[0];
 		}
-
-		else if (input[size] != input[size + 1])
+		else
 		{
-			if (size == 0)
-			{
-				sign = false;
-				index = 0;
-			}
-			else if (size != 0 && sign == true && input[size + 1] != input[size + 2])
-			{
-				sign = false;
-			}
+			mData[mSize] = -2;
+			mSize += 1;
+			mData[mSize] = input[0];
+			mSize += 1;
+			mData[mSize] = input[1];
+		}
+	}
+	else
+	{ 
+		for (size_t size = 0; size < inSize - 2; size++)		
+		{
 			
-			else if (sign == true && (size + 1 == inSize - 1))
+			//Positive runs
+			if (input[size] == input[size + 1])				// if we see AA, then it is a positive run
 			{
-				mData[mSize] = -2;
-				mSize += 1;
-				mData[mSize] = input[size];
-				mSize += 1;
-				mData[mSize] = input[size + 1];
-			}
-			else if (sign == false && input[size + 1] == input[size + 2]) // aabcc
-			{
-				if ((index - size - 1) == -1)
+				sign = true;
+				if (input[size + 1] != input[size + 2])		// if it is AAB, then the second A is the end of a positive run
 				{
-					mData[mSize] = 1;
-					mSize += 1;
-					mData[mSize] = input[index];
-					mSize += 1;
-					index += 1;
-					sign = true;
-					continue;
-				}
-				while ((size + 1 - index) > 127)
-				{
-					mData[mSize] = -127;
-					mSize += 1;
-					for (size_t j = 0; j < MaxRunSize(); j++)
+					while ((size + 2 - index) > 127)		// split long positive run
 					{
-						mData[mSize] = input[index + j];
+						mData[mSize] = maxSize;
+						mSize += 1;
+						mData[mSize] = input[size];
+						mSize += 1;
+						index += 127;
+					}
+					mData[mSize] = static_cast<char>(size + 2 - index);
+					mSize += 1;
+					mData[mSize] = input[size];
+					mSize += 1;
+					index = size + 2;
+					//special case: after adding two to the index, index > inSize - 3
+					if (index == inSize - 2)
+					{
+						if (input[inSize - 2] == input[inSize - 1])
+						{
+							mData[mSize] = 2;
+							mSize += 1;
+							mData[mSize] = input[inSize - 2];
+						}
+						else
+						{
+							mData[mSize] = -2;
+							mSize += 1;
+							mData[mSize] = input[inSize - 2];
+							mSize += 1;
+							mData[mSize] = input[inSize - 1];
+						}
+					}
+					if (size + 2 == inSize - 1)
+					{
+						mData[mSize] = 1;
+						mSize += 1;
+						mData[mSize] = input[size + 2];
+					}
+				}
+				if (input[size + 1] == input[size + 2] && (size + 3) == inSize) // if a positive run reaches the end
+				{
+					while ((size + 3 - index) > 127)
+					{
+						mData[mSize] = maxSize;
+						mSize += 1;
+						mData[mSize] = input[size];
+						mSize += 1;
+						index += 127;
+					}
+					mData[mSize] = static_cast<char>(size + 3 - index);
+					mSize += 1;
+					mData[mSize] = input[size];
+				}
+			}
+
+			else if (input[size] != input[size + 1])
+			{
+				if (size == 0)								// If starts from the beginning, it is a negative run
+				{
+					sign = false;
+					index = 0;
+				}
+				else if (size != 0 && sign == true && input[size + 1] != input[size + 2]) //switch from a positive run to a negative run, index already set when the positive run ends
+				{
+					sign = false;
+				}
+			
+				else if (sign == true && (size + 1 == inSize - 1))					// the file ends with AAB
+				{
+					mData[mSize] = -2;
+					mSize += 1;
+					mData[mSize] = input[size];
+					mSize += 1;
+					mData[mSize] = input[size + 1];
+				}
+				else if (sign == false && input[size + 1] == input[size + 2]) // aabcc
+				{
+					if ((index - size - 1) == -1)
+					{
+						mData[mSize] = 1;
+						mSize += 1;
+						mData[mSize] = input[index];
+						mSize += 1;
+						index += 1;
+						sign = true;
+						continue;
+					}
+					while ((size + 1 - index) > 127)					// split long negative run
+					{
+						mData[mSize] = -127;
+						mSize += 1;
+						for (size_t j = 0; j < MaxRunSize(); j++)
+						{
+							mData[mSize] = input[index + j];
+							mSize += 1;
+						}
+						index += 127;
+					}
+					mData[mSize] = static_cast<char>(index - size - 1);
+					mSize += 1;
+					for (size_t i = index; i <= size; i++)
+					{
+						mData[mSize] = input[i];
 						mSize += 1;
 					}
-					index += 127;
+					index = size + 1;
 				}
-				mData[mSize] = static_cast<char>(index - size - 1);
-				mSize += 1;
-				for (size_t i = index; i <= size; i++)
+				else if (sign == false && input[size + 1] != input[size + 2] && (size + 2 == inSize - 1))  // end with a negative run
 				{
-					mData[mSize] = input[i];
-					mSize += 1;
-				}
-				index = size + 1;
-			}
-			else if (sign == false && input[size + 1] != input[size + 2] && (size + 2 == inSize - 1))
-			{
-				while ((size + 3 - index) > 127)
-				{
-					mData[mSize] = -127;
-					mSize += 1;
-					for (size_t j = 0; j < MaxRunSize(); j++)
+					while ((size + 3 - index) > 127)
 					{
-						mData[mSize] = input[index + j];
+						mData[mSize] = -127;
+						mSize += 1;
+						for (size_t j = 0; j < MaxRunSize(); j++)
+						{
+							mData[mSize] = input[index + j];
+							mSize += 1;
+						}
+						index += 127;
+					}
+					mData[mSize] = static_cast<char>(index - size - 3);					// split long negative run
+					mSize += 1;
+					for (size_t i = index; i < size + 3; i++)
+					{
+						mData[mSize] = input[i];
 						mSize += 1;
 					}
-					index += 127;
-				}
-				mData[mSize] = static_cast<char>(index - size - 3);
-				mSize += 1;
-				for (size_t i = index; i < size + 3; i++)
-				{
-					mData[mSize] = input[i];
-					mSize += 1;
 				}
 			}
 		}
-
 
 	}
 	
 
 
 	/*
+	OLD ALGORITHM
+
 		for (size_t size = 2; size < inSize; size++)
 		{
 			if (input[size] == input[size - 1]) // if it is AA
