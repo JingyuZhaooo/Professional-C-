@@ -47,7 +47,7 @@ void Decryption::Decrypt(Dictionary& myDict, std::ifstream& fileName)
 		}
 	}
 
-	/*
+	
 	Timer timer1;
 	timer1.start();
 	for (auto& i : unsolved)
@@ -66,7 +66,7 @@ void Decryption::Decrypt(Dictionary& myDict, std::ifstream& fileName)
 		}
 		text1.close();
 	}
-	*/
+	
 
 	Timer timer;
 	timer.start();
@@ -207,9 +207,9 @@ void Decryption::BruteForceHelper(std::vector<decryptedInfo*>& unsolved, std::st
 	{
 		countingMachine[3] = char4 - 22;
 	}
+	
 	for (auto& info : unsolved)
 	{
-		
 		while(true)
 		{
 			std::string toEvaluate;
@@ -219,9 +219,9 @@ void Decryption::BruteForceHelper(std::vector<decryptedInfo*>& unsolved, std::st
 			if (strcmp(hex_str, info->hex_str.c_str()) == 0)
 			{
 				info->textSol = toEvaluate;
-				return;
+				break;
 			}
-			if (strcmp(toEvaluate.c_str(), ending.c_str()))
+			if (toEvaluate.compare(ending) == 0) // found it!
 			{
 				break;
 			}
