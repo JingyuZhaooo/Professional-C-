@@ -19,4 +19,5 @@ public:
 private:
 	
 	std::unordered_map<unsigned, decryptedInfo*> mSolved;
+	void BruteForceHelper(std::vector<decryptedInfo*>& unsolved, std::string starting, std::string ending);
 };

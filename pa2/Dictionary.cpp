@@ -41,5 +41,5 @@ void Dictionary::Load(std::ifstream& fileName)
 		mDictionaryMap.emplace(static_cast<std::string>(hex_str), str);	// add the PasswordToHash to mDictionaryMap
 	}
 	double elapsed = timer.getElapsed();
-	std::cout << elapsed << std::endl;
+	std::cout << "Loading the dictionary: "<< elapsed  << " seconds" << std::endl;
 }
