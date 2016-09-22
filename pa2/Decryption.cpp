@@ -57,15 +57,7 @@ void Decryption::Decrypt(Dictionary& myDict, std::ifstream& fileName)
 	}
 	double elapsed1 = timer1.getElapsed();
 	std::cout << "Serial Brute Force: " << elapsed1 << " seconds" << std::endl;
-	std::ofstream text1("pass_solvedSerialBruteForce.txt");
-	if (text1.is_open())
-	{
-		for (int i = 1; i < entryNumCount; i++)
-		{
-			text1 << mSolved.find(i)->second->hex_str << "," << mSolved.find(i)->second->textSol << "\n";
-		}
-		text1.close();
-	}
+
 	
 
 	Timer timer;
