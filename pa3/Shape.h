@@ -18,6 +18,17 @@ public:
 	// Draw the shape
 	virtual void Draw(wxDC& dc) const = 0;
 	virtual ~Shape() { }	
+	//Getters and Setters for wxPen and wxBrush
+	int GetPenWidth() { return mPen.GetWidth(); };
+	wxColour GetPenColor() { return mPen.GetColour(); };
+	void SetPenWidth(int width) { mPen.SetWidth(width); };
+	void SetPenColor(wxColour color) { mPen.SetColour(color); };
+	wxPen GetPen() { return mPen; };
+	wxColour GetBrushColor() { return mBrush.GetColour(); };
+	void SetBrushColor(wxColour color) { mBrush.SetColour(color); };
+	wxBrush GetBrush() { return mBrush; };
+	void SetPen(wxPen pen) { mPen = pen; };
+	void SetBrush(wxBrush brush) { mBrush = brush; };
 protected:
 	// Starting point of shape
 	wxPoint mStartPoint;
@@ -27,4 +38,7 @@ protected:
 	wxPoint mTopLeft;
 	// Bottom right point of shape
 	wxPoint mBotRight;
+
+	wxPen mPen;
+	wxBrush mBrush;
 };

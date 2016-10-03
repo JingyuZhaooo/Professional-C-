@@ -26,11 +26,15 @@ std::shared_ptr<Command> CommandFactory::Create(std::shared_ptr<PaintModel> mode
 {
 	std::shared_ptr<Command> retVal;
 	// TODO: Actually create a command based on the type passed in
+	wxPen currPen = model->GetPen();
+	wxBrush currBrush = model->GetBrush();
 	switch (type)
 	{
 		case CM_DrawRect:
 		{
 			auto rect = std::make_shared<RectShape>(start);
+			rect->SetPen(currPen);
+			rect->SetBrush(currBrush);
 			auto command = std::make_shared<DrawCommand>(start, rect);
 			retVal = command;
 			break;
@@ -38,6 +42,8 @@ std::shared_ptr<Command> CommandFactory::Create(std::shared_ptr<PaintModel> mode
 		case CM_DrawEllipse:
 		{
 			auto ellipse = std::make_shared<EllipseShape>(start);
+			ellipse->SetPen(currPen);
+			ellipse->SetBrush(currBrush);
 			auto command = std::make_shared<DrawCommand>(start, ellipse);
 			retVal = command;
 			break;
@@ -45,6 +51,8 @@ std::shared_ptr<Command> CommandFactory::Create(std::shared_ptr<PaintModel> mode
 		case CM_DrawLine:
 		{
 			auto line = std::make_shared<LineShape>(start);
+			line->SetPen(currPen);
+			line->SetBrush(currBrush);
 			auto command = std::make_shared<DrawCommand>(start, line);
 			retVal = command;
 			break;
@@ -52,6 +60,8 @@ std::shared_ptr<Command> CommandFactory::Create(std::shared_ptr<PaintModel> mode
 		case CM_DrawPencil:
 		{
 			auto pencil = std::make_shared<PencilShape>(start);
+			pencil->SetPen(currPen);
+			pencil->SetBrush(currBrush);
 			auto command = std::make_shared<DrawCommand>(start, pencil);
 			retVal = command;
 			break;

@@ -231,7 +231,15 @@ void PaintFrame::OnDelete(wxCommandEvent& event)
 
 void PaintFrame::OnSetPenColor(wxCommandEvent& event)
 {
-	// TODO
+	wxColourData data; 
+	data.SetColour(mModel->GetPenColor());
+	wxColourDialog dialog(this, &data); 
+	if (dialog.ShowModal() == wxID_OK) 
+	{ 
+		wxColourData colorData = dialog.GetColourData();
+		wxColour color = colorData.GetColour();
+		mModel->SetPenColor(color);
+	}
 }
 
 void PaintFrame::OnSetPenWidth(wxCommandEvent& event)
@@ -241,7 +249,15 @@ void PaintFrame::OnSetPenWidth(wxCommandEvent& event)
 
 void PaintFrame::OnSetBrushColor(wxCommandEvent& event)
 {
-	// TODO
+	wxColourData data;
+	data.SetColour(mModel->GetBrushColor());
+	wxColourDialog dialog(this, &data);
+	if (dialog.ShowModal() == wxID_OK)
+	{
+		wxColourData colorData = dialog.GetColourData();
+		wxColour color = colorData.GetColour();
+		mModel->SetBrushColor(color);
+	}
 }
 
 void PaintFrame::OnMouseButton(wxMouseEvent& event)

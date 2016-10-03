@@ -7,6 +7,8 @@ PencilShape::PencilShape(const wxPoint & start) : Shape(start)
 
 void PencilShape::Draw(wxDC & dc) const
 {
+	dc.SetPen(mPen);
+	dc.SetBrush(mBrush);
 	int size = mWXPoints.size(); // get the number of points
 	const wxPoint* points = &(mWXPoints[0]); // convert the vector to array
 	dc.DrawLines(size, points);

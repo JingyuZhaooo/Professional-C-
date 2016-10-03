@@ -33,10 +33,21 @@ public:
 	void Undo();
 	void Redo();
 	void ClearRedo(); // clear the Redo stack after adding a new command
+	//Getters and Setters for wxPen and wxBrush
+	int GetPenWidth() { return mPen.GetWidth(); };
+	wxColour GetPenColor() { return mPen.GetColour(); };
+	void SetPenWidth(int width) { mPen.SetWidth(width); };
+	void SetPenColor(wxColour color) { mPen.SetColour(color); };
+	wxPen GetPen() { return mPen; };
+	wxColour GetBrushColor() { return mBrush.GetColour(); };
+	void SetBrushColor(wxColour color) { mBrush.SetColour(color); };
+	wxBrush GetBrush() { return mBrush; };
 private:
 	// Vector of all the shapes in the model
 	std::vector<std::shared_ptr<Shape>> mShapes;
 	std::shared_ptr<Command> mActiveCommand;
 	std::stack<std::shared_ptr<Command>> mUndo;
 	std::stack<std::shared_ptr<Command>> mRedo;
+	wxPen mPen;
+	wxBrush mBrush;
 };
