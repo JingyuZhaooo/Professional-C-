@@ -19,7 +19,16 @@ void PaintModel::DrawShapes(wxDC& dc, bool showSelection)
 // Clear the current paint model and start fresh
 void PaintModel::New()
 {
-	// TODO
+	mShapes.clear();
+	mActiveCommand = nullptr;
+	while (!mUndo.empty())
+	{
+		mUndo.pop();
+	}
+	while (!mRedo.empty())
+	{
+		mRedo.pop();
+	}
 }
 
 // Add a shape to the paint model
@@ -66,6 +75,56 @@ void PaintModel::UpdateCommand(wxPoint point)
 
 void PaintModel::FinalizeCommand()
 {
+	mUndo.emplace(mActiveCommand); // When a command is finalized, push it onto the undo stack
 	mActiveCommand->Finalize(shared_from_this());
 	mActiveCommand.reset();
+}
+
+bool PaintModel::CanUndo()
+{
+	if (mUndo.empty())
+	{
+		return false;
+	}
+	return true;
+}
+
+bool PaintModel::CanRedo()
+{
+	if (mRedo.empty())
+	{
+		return false;
+	}
+	return true;
+}
+
+void PaintModel::Undo()
+{
+	if (CanUndo())
+	{
+		std::shared_ptr<Command> top = mUndo.top();
+		mUndo.pop();
+		top->Undo(shared_from_this());
+		mRedo.emplace(top);
+	}
+	
+}
+
+void PaintModel::Redo()
+{
+	if (CanRedo())
+	{
+		std::shared_ptr<Command> top = mRedo.top();
+		mRedo.pop();
+		top->Redo(shared_from_this());
+		mUndo.emplace(top);
+	}
+}
+
+void PaintModel::ClearRedo()
+{
+	while (!mRedo.empty())
+	{
+		mRedo.pop();
+	}
 }

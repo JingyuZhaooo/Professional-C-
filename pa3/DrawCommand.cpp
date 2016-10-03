@@ -1,5 +1,6 @@
 #include "DrawCommand.h"
 #include "Shape.h"
+#include "PaintModel.h"
 
 DrawCommand::DrawCommand(const wxPoint& start, std::shared_ptr<Shape> shape) : Command(start, shape)
 {
@@ -19,10 +20,10 @@ void DrawCommand::Finalize(std::shared_ptr<PaintModel> model)
 
 void DrawCommand::Undo(std::shared_ptr<PaintModel> model)
 {
-
+	model->RemoveShape(this->GetShape());
 }
 
 void DrawCommand::Redo(std::shared_ptr<PaintModel> model)
 {
-
+	model->AddShape(this->GetShape());
 }

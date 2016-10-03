@@ -176,6 +176,10 @@ void PaintFrame::OnExit(wxCommandEvent& event)
 void PaintFrame::OnNew(wxCommandEvent& event)
 {
 	mModel->New();
+	mToolbar->EnableTool(wxID_UNDO, false);
+	mEditMenu->Enable(wxID_UNDO, false);
+	mToolbar->EnableTool(wxID_REDO, false);
+	mEditMenu->Enable(wxID_REDO, false);
 	mPanel->PaintNow();
 }
 
@@ -191,12 +195,28 @@ void PaintFrame::OnImport(wxCommandEvent& event)
 
 void PaintFrame::OnUndo(wxCommandEvent& event)
 {
-	// TODO
+	mModel->Undo();
+	mPanel->PaintNow();
+	if (!mModel->CanUndo())
+	{
+		mToolbar->EnableTool(wxID_UNDO, false);
+		mEditMenu->Enable(wxID_UNDO, false);
+	}
+	mToolbar->EnableTool(wxID_REDO, true);
+	mEditMenu->Enable(wxID_REDO, true);
 }
 
 void PaintFrame::OnRedo(wxCommandEvent& event)
 {
-	// TODO
+	mModel->Redo();
+	mPanel->PaintNow();
+	if (!mModel->CanRedo())
+	{
+		mToolbar->EnableTool(wxID_REDO, false);
+		mEditMenu->Enable(wxID_REDO, false);
+	}
+	mToolbar->EnableTool(wxID_UNDO, true);
+	mEditMenu->Enable(wxID_UNDO, true);
 }
 
 void PaintFrame::OnUnselect(wxCommandEvent& event)
@@ -270,11 +290,32 @@ void PaintFrame::OnMouseButton(wxMouseEvent& event)
 					mModel->UpdateCommand(event.GetPosition());
 					mPanel->PaintNow();
 					mModel->FinalizeCommand();
+					
 					break;
 				}
 			}
-			
 		}
+		mModel->ClearRedo();
+	}
+	if (mModel->CanUndo())
+	{
+		mToolbar->EnableTool(wxID_UNDO, true);
+		mEditMenu->Enable(wxID_UNDO, true);
+	}
+	else
+	{
+		mToolbar->EnableTool(wxID_UNDO, false);
+		mEditMenu->Enable(wxID_UNDO, false);
+	}
+	if (mModel->CanRedo())
+	{
+		mToolbar->EnableTool(wxID_REDO, true);
+		mEditMenu->Enable(wxID_REDO, true);
+	}
+	else
+	{
+		mToolbar->EnableTool(wxID_REDO, false);
+		mEditMenu->Enable(wxID_REDO, false);
 	}
 }
 
