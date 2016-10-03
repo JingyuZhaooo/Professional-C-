@@ -12,6 +12,7 @@
 #include <wx/filedlg.h>
 #include "PaintDrawPanel.h"
 #include "PaintModel.h"
+#include "DrawCommand.h"
 
 wxBEGIN_EVENT_TABLE(PaintFrame, wxFrame)
 	EVT_MENU(wxID_EXIT, PaintFrame::OnExit)
@@ -227,17 +228,64 @@ void PaintFrame::OnMouseButton(wxMouseEvent& event)
 {
 	if (event.LeftDown())
 	{
-		// TODO: This is when the left mouse button is pressed
+		switch (mCurrentTool)
+		{
+			case ID_DrawRect:
+			{
+				mModel->SaveActiveCommand(CM_DrawRect, event.GetPosition());
+				mPanel->PaintNow();
+				break;
+			}
+			case ID_DrawEllipse:
+			{
+				mModel->SaveActiveCommand(CM_DrawEllipse, event.GetPosition());
+				mPanel->PaintNow();
+				break;
+			}
+			case ID_DrawLine:
+			{
+				mModel->SaveActiveCommand(CM_DrawLine, event.GetPosition());
+				mPanel->PaintNow();
+				break;
+			}
+			case ID_DrawPencil:
+			{
+				mModel->SaveActiveCommand(CM_DrawPencil, event.GetPosition());
+				mPanel->PaintNow();
+				break;
+			}
+		}
 	}
 	else if (event.LeftUp())
 	{
-		// TODO: This is when the left mouse button is released
+		switch (mCurrentTool)
+		{
+			case ID_DrawRect:
+			case ID_DrawEllipse:
+			case ID_DrawLine:
+			case ID_DrawPencil:
+			{
+				if (mModel->HasActiveCommand())
+				{
+					mModel->UpdateCommand(event.GetPosition());
+					mPanel->PaintNow();
+					mModel->FinalizeCommand();
+					break;
+				}
+			}
+			
+		}
 	}
 }
 
 void PaintFrame::OnMouseMove(wxMouseEvent& event)
 {
 	// TODO: This is when the mouse is moved inside the drawable area
+	if (mModel->HasActiveCommand())
+	{
+		mModel->UpdateCommand(event.GetPosition());
+		mPanel->PaintNow();
+	}
 }
 
 void PaintFrame::ToggleTool(EventID toolID)

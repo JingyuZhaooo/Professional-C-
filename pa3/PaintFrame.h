@@ -6,6 +6,7 @@
 #include "EventID.h"
 #include "Cursors.h"
 
+
 class PaintFrame : public wxFrame
 {
 public:
