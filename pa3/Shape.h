@@ -29,6 +29,7 @@ public:
 	wxBrush GetBrush() { return mBrush; };
 	void SetPen(wxPen pen) { mPen = pen; };
 	void SetBrush(wxBrush brush) { mBrush = brush; };
+	void DrawSelection(wxDC& dc);
 protected:
 	// Starting point of shape
 	wxPoint mStartPoint;

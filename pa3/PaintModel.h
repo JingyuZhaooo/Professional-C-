@@ -42,6 +42,7 @@ public:
 	wxColour GetBrushColor() { return mBrush.GetColour(); };
 	void SetBrushColor(wxColour color) { mBrush.SetColour(color); };
 	wxBrush GetBrush() { return mBrush; };
+	void Select(wxPoint point);
 private:
 	// Vector of all the shapes in the model
 	std::vector<std::shared_ptr<Shape>> mShapes;
@@ -50,4 +51,5 @@ private:
 	std::stack<std::shared_ptr<Command>> mRedo;
 	wxPen mPen;
 	wxBrush mBrush;
+	std::shared_ptr<Shape> mSelected;
 };

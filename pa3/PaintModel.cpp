@@ -15,6 +15,10 @@ void PaintModel::DrawShapes(wxDC& dc, bool showSelection)
 	{
 		i->Draw(dc);
 	}
+	if (mSelected != nullptr)
+	{
+		mSelected->DrawSelection(dc);
+	}
 }
 
 // Clear the current paint model and start fresh
@@ -129,5 +133,17 @@ void PaintModel::ClearRedo()
 	while (!mRedo.empty())
 	{
 		mRedo.pop();
+	}
+}
+
+void PaintModel::Select(wxPoint point)
+{
+	for (int i = mShapes.size() - 1; i >= 0; i--)
+	{
+		if (mShapes[i]->Intersects(point))
+		{
+			mSelected = mShapes[i];
+			return;
+		}
 	}
 }

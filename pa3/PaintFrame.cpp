@@ -244,7 +244,27 @@ void PaintFrame::OnSetPenColor(wxCommandEvent& event)
 
 void PaintFrame::OnSetPenWidth(wxCommandEvent& event)
 {
-	// TODO
+	wxTextEntryDialog textEntryDialog;
+	textEntryDialog.Create(mPanel, "Enter value between 1 and 10", "Set the pen width", "", wxTextEntryDialogStyle, wxDefaultPosition);
+	if (textEntryDialog.ShowModal() == wxID_OK)
+	{
+		std::string num = textEntryDialog.GetValue();
+		if (num.length() == 1 && isdigit(num[0]))
+		{
+			int width = std::stoi(num);
+			mModel->SetPenWidth(width);
+			
+		}
+		else if (num.length() == 2 && isdigit(num[0]) && isdigit(num[1]))
+		{
+			int width = std::stoi(num);
+			if (width == 10)
+			{
+				mModel->SetPenWidth(width);
+			}
+		}
+	}
+	
 }
 
 void PaintFrame::OnSetBrushColor(wxCommandEvent& event)
@@ -287,6 +307,12 @@ void PaintFrame::OnMouseButton(wxMouseEvent& event)
 			case ID_DrawPencil:
 			{
 				mModel->SaveActiveCommand(CM_DrawPencil, event.GetPosition());
+				mPanel->PaintNow();
+				break;
+			}
+			case ID_Selector:
+			{
+				mModel->Select(event.GetPosition());
 				mPanel->PaintNow();
 				break;
 			}

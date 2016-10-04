@@ -51,3 +51,13 @@ void Shape::GetBounds(wxPoint& topLeft, wxPoint& botRight) const
 	topLeft = mTopLeft;
 	botRight = mBotRight;
 }
+
+void Shape::DrawSelection(wxDC& dc)
+{
+	dc.SetPen(*wxBLACK_DASHED_PEN);
+	dc.SetBrush(*wxTRANSPARENT_BRUSH);
+	wxPoint topLeft(mTopLeft.x - 2, mTopLeft.y - 2);
+	wxPoint bottomRight(mBotRight.x + 2, mBotRight.y + 2);
+	wxRect wxRect{ topLeft, bottomRight };
+	dc.DrawRectangle(wxRect);
+}
