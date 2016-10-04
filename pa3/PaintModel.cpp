@@ -36,6 +36,7 @@ void PaintModel::New()
 	}
 	mPen = *wxBLACK_PEN;
 	mBrush = *wxWHITE_BRUSH;
+	mSelected = nullptr;
 }
 
 // Add a shape to the paint model
@@ -71,7 +72,16 @@ bool PaintModel::HasActiveCommand()
 std::shared_ptr<Command> PaintModel::CreateCommand(CommandType type, wxPoint start)
 {
 	auto command = CommandFactory::Create(shared_from_this(), type, start);
-	AddShape(command->GetShape());
+	switch (type)		// only add a shape when we actually draw a shape
+	{
+		case CM_DrawRect:
+		case CM_DrawEllipse:
+		case CM_DrawLine:
+		case CM_DrawPencil:
+		{
+			AddShape(command->GetShape());
+		}
+	}
 	return command;
 }
 
@@ -146,4 +156,5 @@ void PaintModel::Select(wxPoint point)
 			return;
 		}
 	}
+	mSelected = nullptr; //If you click where there isn¡¯t any shape, the selection should go away
 }

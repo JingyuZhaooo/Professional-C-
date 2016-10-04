@@ -240,6 +240,13 @@ void PaintFrame::OnSetPenColor(wxCommandEvent& event)
 		wxColour color = colorData.GetColour();
 		mModel->SetPenColor(color);
 	}
+	wxPoint x(0, 0);
+	if (mModel->GetSelected() != nullptr)
+	{
+		mModel->SaveActiveCommand(CM_SetPen, x);
+		mPanel->PaintNow();
+		mModel->FinalizeCommand();
+	}
 }
 
 void PaintFrame::OnSetPenWidth(wxCommandEvent& event)
@@ -264,7 +271,13 @@ void PaintFrame::OnSetPenWidth(wxCommandEvent& event)
 			}
 		}
 	}
-	
+	wxPoint x(0, 0);
+	if (mModel->GetSelected() != nullptr)
+	{
+		mModel->SaveActiveCommand(CM_SetPen, x);
+		mPanel->PaintNow();
+		mModel->FinalizeCommand();
+	}
 }
 
 void PaintFrame::OnSetBrushColor(wxCommandEvent& event)
@@ -277,6 +290,13 @@ void PaintFrame::OnSetBrushColor(wxCommandEvent& event)
 		wxColourData colorData = dialog.GetColourData();
 		wxColour color = colorData.GetColour();
 		mModel->SetBrushColor(color);
+	}
+	wxPoint x(0, 0);
+	if (mModel->GetSelected() != nullptr)
+	{
+		mModel->SaveActiveCommand(CM_SetBrush, x);
+		mPanel->PaintNow();
+		mModel->FinalizeCommand();
 	}
 }
 
@@ -316,6 +336,21 @@ void PaintFrame::OnMouseButton(wxMouseEvent& event)
 				mPanel->PaintNow();
 				break;
 			}
+			/*
+			case ID_SetPenColor:
+			case ID_SetPenWidth:
+			{
+			if (mModel->GetSelected() != nullptr)
+			{
+			mModel->SaveActiveCommand(CM_SetPen, event.GetPosition());
+			mPanel->PaintNow();
+			mModel->FinalizeCommand();
+			break;
+			}
+
+			}
+			*/
+			
 		}
 	}
 	else if (event.LeftUp())

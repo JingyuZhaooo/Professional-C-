@@ -23,6 +23,8 @@
     <ClInclude Include="PaintModel.h" />
     <ClInclude Include="PencilShape.h" />
     <ClInclude Include="RectShape.h" />
+    <ClInclude Include="SetBrushCommand.h" />
+    <ClInclude Include="SetPenCommand.h" />
     <ClInclude Include="Shape.h" />
   </ItemGroup>
   <ItemGroup>
@@ -37,6 +39,8 @@
     <ClCompile Include="PaintModel.cpp" />
     <ClCompile Include="PencilShape.cpp" />
     <ClCompile Include="RectShape.cpp" />
+    <ClCompile Include="SetBrushCommand.cpp" />
+    <ClCompile Include="SetPenCommand.cpp" />
     <ClCompile Include="Shape.cpp" />
   </ItemGroup>
   <ItemGroup>

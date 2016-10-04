@@ -45,6 +45,6 @@ void PencilShape::Finalize()
 			MaxY = i.y;
 		}
 	}
-	mTopLeft = wxPoint(MinX, MaxY);
-	mBotRight = wxPoint(MaxX, MinY);
+	mTopLeft = wxPoint(MinX, MinY);
+	mBotRight = wxPoint(MaxX, MaxY);
 }

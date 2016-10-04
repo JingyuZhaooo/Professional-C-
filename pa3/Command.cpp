@@ -6,6 +6,8 @@
 #include "EllipseShape.h"
 #include "LineShape.h"
 #include "PencilShape.h"
+#include "SetPenCommand.h"
+#include "SetBrushCommand.h"
 
 Command::Command(const wxPoint& start, std::shared_ptr<Shape> shape)
 	:mStartPoint(start)
@@ -66,6 +68,24 @@ std::shared_ptr<Command> CommandFactory::Create(std::shared_ptr<PaintModel> mode
 			retVal = command;
 			break;
 		}
+		case CM_SetPen:
+		{
+			if (model->GetSelected() != nullptr)	// if a shape is selected
+			{
+				auto command = std::make_shared<SetPenCommand>(start, model->GetSelected());
+				command->Finalize(model);
+				retVal = command;
+				break;
+			}
+		}
+		case CM_SetBrush:
+			if (model->GetSelected() != nullptr)	// if a shape is selected
+			{
+				auto command = std::make_shared<SetBrushCommand>(start, model->GetSelected());
+				command->Finalize(model);
+				retVal = command;
+				break;
+			}
 	}
 	
 	return retVal;

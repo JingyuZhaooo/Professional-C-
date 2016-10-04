@@ -20,6 +20,10 @@ void DrawCommand::Finalize(std::shared_ptr<PaintModel> model)
 
 void DrawCommand::Undo(std::shared_ptr<PaintModel> model)
 {
+	if (this->GetShape() == model->GetSelected())
+	{
+		model->GetSelected() = nullptr;
+	}
 	model->RemoveShape(this->GetShape());
 }
 
