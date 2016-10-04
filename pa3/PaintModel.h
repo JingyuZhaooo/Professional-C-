@@ -28,22 +28,23 @@ public:
 	std::shared_ptr<Command> CreateCommand(CommandType type, wxPoint start);
 	void UpdateCommand(wxPoint point);
 	void FinalizeCommand();
-	bool CanUndo();
-	bool CanRedo();
+	bool CanUndo() const;
+	bool CanRedo() const;
 	void Undo();
 	void Redo();
 	void ClearRedo(); // clear the Redo stack after adding a new command
 	//Getters and Setters for wxPen and wxBrush
-	int GetPenWidth() { return mPen.GetWidth(); };
-	wxColour GetPenColor() { return mPen.GetColour(); };
+	int GetPenWidth() const { return mPen.GetWidth(); };
+	wxColour GetPenColor() const { return mPen.GetColour(); };
 	void SetPenWidth(int width) { mPen.SetWidth(width); };
 	void SetPenColor(wxColour color) { mPen.SetColour(color); };
-	wxPen GetPen() { return mPen; };
-	wxColour GetBrushColor() { return mBrush.GetColour(); };
+	wxPen GetPen() const { return mPen; };
+	wxColour GetBrushColor() const { return mBrush.GetColour(); };
 	void SetBrushColor(wxColour color) { mBrush.SetColour(color); };
-	wxBrush GetBrush() { return mBrush; };
+	wxBrush GetBrush() const { return mBrush; };
 	void Select(wxPoint point);
 	std::shared_ptr<Shape> GetSelected() { return mSelected; };
+	void SetSelected(std::shared_ptr<Shape> selected) { mSelected = selected; };
 private:
 	// Vector of all the shapes in the model
 	std::vector<std::shared_ptr<Shape>> mShapes;

@@ -97,7 +97,7 @@ void PaintModel::FinalizeCommand()
 	mActiveCommand.reset();
 }
 
-bool PaintModel::CanUndo()
+bool PaintModel::CanUndo() const
 {
 	if (mUndo.empty())
 	{
@@ -106,7 +106,7 @@ bool PaintModel::CanUndo()
 	return true;
 }
 
-bool PaintModel::CanRedo()
+bool PaintModel::CanRedo() const
 {
 	if (mRedo.empty())
 	{

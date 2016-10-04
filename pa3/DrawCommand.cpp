@@ -22,7 +22,7 @@ void DrawCommand::Undo(std::shared_ptr<PaintModel> model)
 {
 	if (this->GetShape() == model->GetSelected())
 	{
-		model->GetSelected() = nullptr;
+		model->SetSelected(nullptr);
 	}
 	model->RemoveShape(this->GetShape());
 }

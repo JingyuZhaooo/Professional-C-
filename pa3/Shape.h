@@ -19,14 +19,14 @@ public:
 	virtual void Draw(wxDC& dc) const = 0;
 	virtual ~Shape() { }	
 	//Getters and Setters for wxPen and wxBrush
-	int GetPenWidth() { return mPen.GetWidth(); };
-	wxColour GetPenColor() { return mPen.GetColour(); };
+	int GetPenWidth() const { return mPen.GetWidth(); };
+	wxColour GetPenColor() const { return mPen.GetColour(); };
 	void SetPenWidth(int width) { mPen.SetWidth(width); };
 	void SetPenColor(wxColour color) { mPen.SetColour(color); };
-	wxPen GetPen() { return mPen; };
-	wxColour GetBrushColor() { return mBrush.GetColour(); };
+	wxPen GetPen() const { return mPen; };
+	wxColour GetBrushColor() const { return mBrush.GetColour(); };
 	void SetBrushColor(wxColour color) { mBrush.SetColour(color); };
-	wxBrush GetBrush() { return mBrush; };
+	wxBrush GetBrush() const { return mBrush; };
 	void SetPen(wxPen pen) { mPen = pen; };
 	void SetBrush(wxBrush brush) { mBrush = brush; };
 	void DrawSelection(wxDC& dc);
@@ -42,4 +42,5 @@ protected:
 
 	wxPen mPen;
 	wxBrush mBrush;
+	//wxPoint mOffSet;
 };

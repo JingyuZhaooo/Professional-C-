@@ -14,8 +14,8 @@ public:
 	void Finalize(std::shared_ptr<PaintModel> model) override;
 	void Undo(std::shared_ptr<PaintModel> model) override;
 	void Redo(std::shared_ptr<PaintModel> model) override;
-	wxColour GetPreviousColor() { return mPreviousColor; };
-	int GetPreviousWidth() { return mPreviousWidth; };
+	wxColour GetPreviousColor() const { return mPreviousColor; };
+	int GetPreviousWidth() const { return mPreviousWidth; };
 private:
 	wxColour mColor;
 	int mPenWidth;

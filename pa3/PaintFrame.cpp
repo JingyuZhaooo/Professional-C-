@@ -221,12 +221,28 @@ void PaintFrame::OnRedo(wxCommandEvent& event)
 
 void PaintFrame::OnUnselect(wxCommandEvent& event)
 {
-	// TODO
+	if (mModel->GetSelected() != nullptr)
+	{
+		mModel->SetSelected(nullptr);
+		mEditMenu->Enable(ID_Unselect, false);
+		mPanel->PaintNow();
+	}
 }
 
 void PaintFrame::OnDelete(wxCommandEvent& event)
 {
-	// TODO
+	if (mModel->GetSelected() != nullptr)
+	{
+		wxPoint x(0, 0);
+		mModel->SaveActiveCommand(CM_Delete, x);
+
+
+		mModel->SetSelected(nullptr);
+		mEditMenu->Enable(ID_Delete, false);
+		mPanel->PaintNow();
+		mModel->FinalizeCommand();
+	}
+	
 }
 
 void PaintFrame::OnSetPenColor(wxCommandEvent& event)
@@ -333,24 +349,20 @@ void PaintFrame::OnMouseButton(wxMouseEvent& event)
 			case ID_Selector:
 			{
 				mModel->Select(event.GetPosition());
-				mPanel->PaintNow();
+				if (mModel->GetSelected() != nullptr)
+				{
+					mEditMenu->Enable(ID_Unselect, true);
+					mEditMenu->Enable(ID_Delete, true);
+					mPanel->PaintNow();
+				}
+				else
+				{
+					mEditMenu->Enable(ID_Unselect, false);
+					mEditMenu->Enable(ID_Delete, false);
+					mPanel->PaintNow();
+				}
 				break;
 			}
-			/*
-			case ID_SetPenColor:
-			case ID_SetPenWidth:
-			{
-			if (mModel->GetSelected() != nullptr)
-			{
-			mModel->SaveActiveCommand(CM_SetPen, event.GetPosition());
-			mPanel->PaintNow();
-			mModel->FinalizeCommand();
-			break;
-			}
-
-			}
-			*/
-			
 		}
 	}
 	else if (event.LeftUp())
@@ -398,12 +410,28 @@ void PaintFrame::OnMouseButton(wxMouseEvent& event)
 
 void PaintFrame::OnMouseMove(wxMouseEvent& event)
 {
+	/*
 	// TODO: This is when the mouse is moved inside the drawable area
+	if (mModel->GetSelected() != nullptr)	// currently has a selection
+	{
+		if (mModel->GetSelected()->Intersects(event.GetPosition())) // the cursor is over the selection
+		{
+			this->SetCursor(CU_Move);
+
+		}
+		else
+		{
+			this->SetCursor(CU_Default);
+		}
+	}
+	*/
+	/*
 	if (mModel->HasActiveCommand())
 	{
 		mModel->UpdateCommand(event.GetPosition());
 		mPanel->PaintNow();
 	}
+	*/
 }
 
 void PaintFrame::ToggleTool(EventID toolID)

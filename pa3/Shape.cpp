@@ -2,9 +2,10 @@
 
 Shape::Shape(const wxPoint& start)
 	:mStartPoint(start)
-	,mEndPoint(start)
-	,mTopLeft(start)
-	,mBotRight(start)
+	, mEndPoint(start)
+	, mTopLeft(start)
+	, mBotRight(start)
+	//, mOffSet(0,0)
 {
 
 }
@@ -48,8 +49,8 @@ void Shape::Finalize()
 
 void Shape::GetBounds(wxPoint& topLeft, wxPoint& botRight) const
 {
-	topLeft = mTopLeft;
-	botRight = mBotRight;
+	topLeft = mTopLeft;   // -mOffSet;
+	botRight = mBotRight;   // -mOffSet;
 }
 
 void Shape::DrawSelection(wxDC& dc)
