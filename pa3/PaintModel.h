@@ -45,6 +45,7 @@ public:
 	void Select(wxPoint point);
 	std::shared_ptr<Shape> GetSelected() { return mSelected; };
 	void SetSelected(std::shared_ptr<Shape> selected) { mSelected = selected; };
+	void Save(std::string fileName, wxSize size);
 private:
 	// Vector of all the shapes in the model
 	std::vector<std::shared_ptr<Shape>> mShapes;

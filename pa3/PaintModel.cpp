@@ -158,3 +158,33 @@ void PaintModel::Select(wxPoint point)
 	}
 	mSelected = nullptr; //If you click where there isn¡¯t any shape, the selection should go away
 }
+
+void PaintModel::Save(std::string fileName, wxSize size)
+{
+	std::size_t position = fileName.find_last_of('.');
+	std::string fileType = fileName.substr(position + 1);
+	wxBitmapType saveType;
+	if (fileType.compare("png"))
+	{
+		saveType = wxBITMAP_TYPE_PNG;
+	}
+	else if (fileType.compare("bmp"))
+	{
+		saveType = wxBITMAP_TYPE_BMP;
+	}
+	else if (fileType.compare("jpeg") || fileType.compare("jpg"))
+	{
+		saveType = wxBITMAP_TYPE_JPEG;
+	}
+	wxBitmap bitmap; // Create the bitmap of the specified wxSize 
+	bitmap.Create(size);
+					 // Create a memory DC to draw to the bitmap 
+	wxMemoryDC dc(bitmap); 
+	// Clear the background color 
+	dc.SetBackground(*wxWHITE_BRUSH); 
+	dc.Clear(); 
+	// Draw all the shapes (make sure not the selection!) 
+	DrawShapes(dc); 
+	// Write the bitmap with the specified file name and wxBitmapType 
+	bitmap.SaveFile(fileName, saveType);
+}

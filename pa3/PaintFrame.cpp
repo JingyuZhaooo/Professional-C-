@@ -13,6 +13,7 @@
 #include "PaintDrawPanel.h"
 #include "PaintModel.h"
 #include "DrawCommand.h"
+#include <wx/wfstream.h>
 
 wxBEGIN_EVENT_TABLE(PaintFrame, wxFrame)
 	EVT_MENU(wxID_EXIT, PaintFrame::OnExit)
@@ -185,12 +186,37 @@ void PaintFrame::OnNew(wxCommandEvent& event)
 
 void PaintFrame::OnExport(wxCommandEvent& event)
 {
-	// TODO
+	wxFileDialog saveFileDialog(this, _("Save .png file"), "", "Random Drawing",
+		"BMP files (*.bmp)|*.bmp|PNG files (*.png)|*.png|JPEG and JPG files (*.jpeg;*.jpg)|*.jpeg;*.jpg", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+	if (saveFileDialog.ShowModal() == wxID_CANCEL)
+		return;     // the user changed idea...
+
+					// save the current contents in the file;
+					// this can be done with e.g. wxWidgets output streams:
+	wxFileOutputStream output_stream(saveFileDialog.GetPath());
+	if (!output_stream.IsOk())
+	{
+		wxLogError("Cannot save current contents in file '%s'.", saveFileDialog.GetPath());
+		return;
+	}
+	std::string fileName = saveFileDialog.GetPath();
+	mModel->Save(fileName, mPanel->GetSize());
 }
 
 void PaintFrame::OnImport(wxCommandEvent& event)
 {
-	// TODO
+	wxFileDialog openFileDialog(this, _("Open XYZ file"), "", "", "XYZ files (*.xyz)|*.xyz", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+	if (openFileDialog.ShowModal() == wxID_CANCEL)
+		return;     // the user changed idea...
+
+					// proceed loading the file chosen by the user;
+					// this can be done with e.g. wxWidgets input streams:
+	wxFileInputStream input_stream(openFileDialog.GetPath());
+	if (!input_stream.IsOk())
+	{
+		wxLogError("Cannot open file '%s'.", openFileDialog.GetPath());
+		return;
+	}
 }
 
 void PaintFrame::OnUndo(wxCommandEvent& event)
