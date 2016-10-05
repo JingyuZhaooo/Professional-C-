@@ -186,7 +186,7 @@ void PaintFrame::OnNew(wxCommandEvent& event)
 
 void PaintFrame::OnExport(wxCommandEvent& event)
 {
-	wxFileDialog saveFileDialog(this, _("Save .png file"), "", "Random Drawing",
+	wxFileDialog saveFileDialog(this, _("Save file"), "", "Random Drawing",
 		"BMP files (*.bmp)|*.bmp|PNG files (*.png)|*.png|JPEG and JPG files (*.jpeg;*.jpg)|*.jpeg;*.jpg", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 	if (saveFileDialog.ShowModal() == wxID_CANCEL)
 		return;     // the user changed idea...
@@ -205,7 +205,7 @@ void PaintFrame::OnExport(wxCommandEvent& event)
 
 void PaintFrame::OnImport(wxCommandEvent& event)
 {
-	wxFileDialog openFileDialog(this, _("Open XYZ file"), "", "", "XYZ files (*.xyz)|*.xyz", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+	wxFileDialog openFileDialog(this, _("Open file"), "", "", "BMP, PNG, and JPEG/JPG files (*.bmp;*.png;*.jpeg;*.jpg)|*.bmp;*.png;*.jpeg;*.jpg", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 	if (openFileDialog.ShowModal() == wxID_CANCEL)
 		return;     // the user changed idea...
 
@@ -217,6 +217,8 @@ void PaintFrame::OnImport(wxCommandEvent& event)
 		wxLogError("Cannot open file '%s'.", openFileDialog.GetPath());
 		return;
 	}
+	std::string fileName = openFileDialog.GetPath();
+	mModel->Load(fileName);
 }
 
 void PaintFrame::OnUndo(wxCommandEvent& event)

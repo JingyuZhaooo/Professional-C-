@@ -11,6 +11,10 @@ PaintModel::PaintModel()
 // Draws any shapes in the model to the provided DC (draw context)
 void PaintModel::DrawShapes(wxDC& dc, bool showSelection)
 {
+	if (mImportedBitmap.IsOk())
+	{
+		dc.DrawBitmap(mImportedBitmap, wxPoint(0, 0)); // The second parameter indicates that we're drawing from the top left corner
+	}
 	for (auto& i : mShapes)
 	{
 		i->Draw(dc);
@@ -24,6 +28,10 @@ void PaintModel::DrawShapes(wxDC& dc, bool showSelection)
 // Clear the current paint model and start fresh
 void PaintModel::New()
 {
+	if (mImportedBitmap.IsOk()) // there is one loaded
+	{
+		mImportedBitmap = wxBitmap("");
+	}
 	mShapes.clear();
 	mActiveCommand = nullptr;
 	while (!mUndo.empty())
@@ -187,4 +195,10 @@ void PaintModel::Save(std::string fileName, wxSize size)
 	DrawShapes(dc); 
 	// Write the bitmap with the specified file name and wxBitmapType 
 	bitmap.SaveFile(fileName, saveType);
+}
+
+void PaintModel::Load(std::string fileName)
+{
+	this->New();
+	mImportedBitmap.LoadFile(fileName);
 }
