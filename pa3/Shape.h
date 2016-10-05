@@ -30,6 +30,8 @@ public:
 	void SetPen(wxPen pen) { mPen = pen; };
 	void SetBrush(wxBrush brush) { mBrush = brush; };
 	void DrawSelection(wxDC& dc);
+	wxPoint GetOffSet() const { return mOffSet; };
+	void SetOffSet(wxPoint offSet) { mOffSet = offSet; };
 protected:
 	// Starting point of shape
 	wxPoint mStartPoint;
@@ -42,5 +44,6 @@ protected:
 
 	wxPen mPen;
 	wxBrush mBrush;
-	//wxPoint mOffSet;
+	wxPoint mOffSet;
+	
 };

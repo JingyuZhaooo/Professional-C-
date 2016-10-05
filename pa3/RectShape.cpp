@@ -9,6 +9,6 @@ void RectShape::Draw(wxDC & dc) const
 {
 	dc.SetPen(mPen);
 	dc.SetBrush(mBrush);
-	wxRect mWXRect{ mTopLeft, mBotRight };
+	wxRect mWXRect{ mTopLeft + mOffSet, mBotRight + mOffSet };
 	dc.DrawRectangle(mWXRect);
 }

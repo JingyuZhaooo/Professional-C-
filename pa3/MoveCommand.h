@@ -11,4 +11,8 @@ public:
 	void Finalize(std::shared_ptr<PaintModel> model) override;
 	void Undo(std::shared_ptr<PaintModel> model) override;
 	void Redo(std::shared_ptr<PaintModel> model) override;
+private:
+	wxPoint mStartPos;
+	wxPoint mOffSet;
+	wxPoint mPreviousOffSet;
 };

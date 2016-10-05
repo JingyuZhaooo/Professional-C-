@@ -354,6 +354,12 @@ void PaintFrame::OnMouseButton(wxMouseEvent& event)
 					mEditMenu->Enable(ID_Unselect, true);
 					mEditMenu->Enable(ID_Delete, true);
 					mPanel->PaintNow();
+					if (mModel->GetSelected()->Intersects(event.GetPosition())) // the cursor is over the selection and we click on it, we want to drag it
+					{
+						mModel->SaveActiveCommand(CM_Move, event.GetPosition());
+						mPanel->PaintNow();
+						break;
+					}
 				}
 				else
 				{
@@ -362,6 +368,7 @@ void PaintFrame::OnMouseButton(wxMouseEvent& event)
 					mPanel->PaintNow();
 				}
 				break;
+
 			}
 		}
 	}
@@ -373,13 +380,13 @@ void PaintFrame::OnMouseButton(wxMouseEvent& event)
 			case ID_DrawEllipse:
 			case ID_DrawLine:
 			case ID_DrawPencil:
+			case ID_Selector:
 			{
 				if (mModel->HasActiveCommand())
 				{
 					mModel->UpdateCommand(event.GetPosition());
 					mPanel->PaintNow();
 					mModel->FinalizeCommand();
-					
 					break;
 				}
 			}
@@ -410,7 +417,6 @@ void PaintFrame::OnMouseButton(wxMouseEvent& event)
 
 void PaintFrame::OnMouseMove(wxMouseEvent& event)
 {
-	/*
 	// TODO: This is when the mouse is moved inside the drawable area
 	if (mModel->GetSelected() != nullptr)	// currently has a selection
 	{
@@ -424,14 +430,11 @@ void PaintFrame::OnMouseMove(wxMouseEvent& event)
 			this->SetCursor(CU_Default);
 		}
 	}
-	*/
-	/*
 	if (mModel->HasActiveCommand())
 	{
 		mModel->UpdateCommand(event.GetPosition());
 		mPanel->PaintNow();
 	}
-	*/
 }
 
 void PaintFrame::ToggleTool(EventID toolID)

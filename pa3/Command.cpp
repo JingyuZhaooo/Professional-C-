@@ -96,17 +96,15 @@ std::shared_ptr<Command> CommandFactory::Create(std::shared_ptr<PaintModel> mode
 				retVal = command;
 				break;
 			}
-			/*
 		case CM_Move:
-			
 			if (model->GetSelected() != nullptr)	// if a shape is selected
 			{
 				auto command = std::make_shared<MoveCommand>(start, model->GetSelected());
-				command->Finalize(model);
+				//command->Finalize(model);
 				retVal = command;
 				break;
 			}
-			*/
+			
 	}
 	
 	return retVal;

@@ -5,7 +5,7 @@ Shape::Shape(const wxPoint& start)
 	, mEndPoint(start)
 	, mTopLeft(start)
 	, mBotRight(start)
-	//, mOffSet(0,0)
+	, mOffSet(0,0)
 {
 
 }
@@ -49,16 +49,16 @@ void Shape::Finalize()
 
 void Shape::GetBounds(wxPoint& topLeft, wxPoint& botRight) const
 {
-	topLeft = mTopLeft;   // -mOffSet;
-	botRight = mBotRight;   // -mOffSet;
+	topLeft = mTopLeft + mOffSet;
+	botRight = mBotRight + mOffSet;
 }
 
 void Shape::DrawSelection(wxDC& dc)
 {
 	dc.SetPen(*wxBLACK_DASHED_PEN);
 	dc.SetBrush(*wxTRANSPARENT_BRUSH);
-	wxPoint topLeft(mTopLeft.x - 2, mTopLeft.y - 2);
-	wxPoint bottomRight(mBotRight.x + 2, mBotRight.y + 2);
+	wxPoint topLeft(mTopLeft.x - 2 + mOffSet.x, mTopLeft.y - 2 + mOffSet.y);
+	wxPoint bottomRight(mBotRight.x + 2 + mOffSet.x, mBotRight.y + 2 + mOffSet.y);
 	wxRect wxRect{ topLeft, bottomRight };
 	dc.DrawRectangle(wxRect);
 }
