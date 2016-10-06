@@ -30,7 +30,7 @@ void PaintModel::New()
 {
 	if (mImportedBitmap.IsOk()) // there is one loaded
 	{
-		mImportedBitmap = wxBitmap("");
+		mImportedBitmap = wxBitmap();
 	}
 	mShapes.clear();
 	mActiveCommand = nullptr;
@@ -200,5 +200,5 @@ void PaintModel::Save(std::string fileName, wxSize size)
 void PaintModel::Load(std::string fileName)
 {
 	this->New();
-	mImportedBitmap.LoadFile(fileName);
+	mImportedBitmap.LoadFile(fileName, wxBITMAP_TYPE_ANY);
 }

@@ -56,6 +56,7 @@ PaintFrame::PaintFrame(const wxString& title, const wxPoint& pos, const wxSize& 
 	
 	SetMinSize(GetSize());
 	SetMaxSize(GetSize());
+	mCursorInMove = false;
 }
 
 void PaintFrame::SetupMenu()
@@ -219,6 +220,7 @@ void PaintFrame::OnImport(wxCommandEvent& event)
 	}
 	std::string fileName = openFileDialog.GetPath();
 	mModel->Load(fileName);
+	mPanel->PaintNow();
 }
 
 void PaintFrame::OnUndo(wxCommandEvent& event)
@@ -382,7 +384,7 @@ void PaintFrame::OnMouseButton(wxMouseEvent& event)
 					mEditMenu->Enable(ID_Unselect, true);
 					mEditMenu->Enable(ID_Delete, true);
 					mPanel->PaintNow();
-					if (mModel->GetSelected()->Intersects(event.GetPosition())) // the cursor is over the selection and we click on it, we want to drag it
+					if (mCursorInMove == true)//if (mModel->GetSelected()->Intersects(event.GetPosition())) // the cursor is over the selection and we click on it, we want to drag it
 					{
 						mModel->SaveActiveCommand(CM_Move, event.GetPosition());
 						mPanel->PaintNow();
@@ -451,11 +453,13 @@ void PaintFrame::OnMouseMove(wxMouseEvent& event)
 		if (mModel->GetSelected()->Intersects(event.GetPosition())) // the cursor is over the selection
 		{
 			this->SetCursor(CU_Move);
+			mCursorInMove = true;
 
 		}
 		else
 		{
 			this->SetCursor(CU_Default);
+			mCursorInMove = false;
 		}
 	}
 	if (mModel->HasActiveCommand())

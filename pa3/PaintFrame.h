@@ -70,4 +70,5 @@ private:
 	class PaintDrawPanel* mPanel;
 
 	EventID mCurrentTool;
+	bool mCursorInMove;
 };
