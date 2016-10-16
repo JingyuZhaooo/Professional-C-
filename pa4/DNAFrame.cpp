@@ -17,6 +17,7 @@
 #include "DNADrawPanel.h"
 #include "Exceptions.h"
 #include "DNAAlignDlg.h"
+#include <wx/wfstream.h>
 
 enum
 {
@@ -70,4 +71,18 @@ void DNAFrame::OnNew(wxCommandEvent& event)
 void DNAFrame::OnAminoHist(wxCommandEvent& event)
 {
 	// TODO: Implement (File>Amino Acid Histogram...)
+	wxFileDialog openFileDialog(this, _("Open FASTA file"), "./data", "", "FASTA files (*.fasta)|*.fasta", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+	if (openFileDialog.ShowModal() == wxID_CANCEL)
+		return;     // the user changed idea...
+
+					// proceed loading the file chosen by the user;
+					// this can be done with e.g. wxWidgets input streams:
+	wxFileInputStream input_stream(openFileDialog.GetPath());
+	if (!input_stream.IsOk())
+	{
+		wxLogError("Cannot open file '%s'.", openFileDialog.GetPath());
+		return;
+	}
+	std::string fileName = openFileDialog.GetPath();
+	mFASTAFile.Load(fileName);
 }

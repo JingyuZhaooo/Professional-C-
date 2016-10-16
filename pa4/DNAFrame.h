@@ -11,6 +11,7 @@
 #include <wx/timer.h>
 #include <wx/menu.h>
 #include <memory>
+#include "FASTAFile.h"
 
 class DNAFrame : public wxFrame
 {
@@ -25,6 +26,6 @@ private:
 private:
 	// Panel for drawing
 	class DNADrawPanel* mPanel;
-	
 	// Variables here
+	FASTAFile mFASTAFile;
 };
