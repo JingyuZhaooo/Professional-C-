@@ -19,7 +19,9 @@ public:
 
 private:
 	int mHeight;
+	int mTotalCount;
 	std::string mTitle;
 	std::string mSequence;
 	std::vector<AminoAcid> mAminoAcids;
+	char mStateMachine[24][4];
 };
