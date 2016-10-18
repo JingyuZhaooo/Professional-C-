@@ -1,4 +1,5 @@
 #include "AminoAcidHist.h"
+#include <sstream>
 
 AminoAcidHist::AminoAcidHist()
 {
@@ -215,15 +216,28 @@ void AminoAcidHist::Translate()
 					break;
 				}
 			}
-			state = 3;				// set the state back to 3
+			if (state != 0)
+			{
+				state = 3;				// set the state back to 3
+			}
 		}
 	}
 	for (auto& i : mAminoAcids)		// calculate each amino acid's percentage
 	{
 		if (mTotalCount != 0)
 		{
-			i.percentage = static_cast<float>(i.count) / static_cast<float>(mTotalCount);
+			i.percentage = static_cast<double>(i.count) * 100 / static_cast<double>(mTotalCount);
+			i.percentage = round(i.percentage * 100) / 100;
 		}
+	}
+	for (auto& i : mAminoAcids)		// put name + percentage + count together
+	{
+		std::ostringstream strs;
+		strs << i.percentage;
+		std::string str = strs.str();
+		i.name += ": ";
+		i.name += str;
+		i.name += "% (" + std::to_string(i.count) + ")";
 	}
 }
 

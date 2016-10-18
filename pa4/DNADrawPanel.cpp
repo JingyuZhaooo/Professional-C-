@@ -46,6 +46,9 @@ void DNADrawPanel::Render(wxDC& dc)
 	{
 		
 		unsigned i = 0;
+		dc.SetPen(*wxBLACK_PEN);
+		dc.DrawText(mFileName, wxPoint(40, 20));
+
 		while (i < mAminoAcids.size())
 		{
 			dc.SetPen(*wxBLACK_PEN);
@@ -53,22 +56,22 @@ void DNADrawPanel::Render(wxDC& dc)
 			{
 				dc.SetTextForeground(*wxRED);
 				dc.SetBrush(*wxRED_BRUSH);
-				dc.DrawRectangle(wxCoord(100), wxCoord(90 + i * mHeight), wxCoord(static_cast<int>(mAminoAcids[i].percentage * 5000)), wxCoord(30));
-				dc.DrawText(mAminoAcids[i].name, wxPoint(50, 80 + i * mHeight));
+				dc.DrawRectangle(wxCoord(190), wxCoord(70 + i * mHeight), wxCoord(static_cast<int>(mAminoAcids[i].percentage * 50)), wxCoord(30));
+				dc.DrawText(mAminoAcids[i].name, wxPoint(40, 80 + i * mHeight));
 			}
 			else if (i % 3 == 1)
 			{
 				dc.SetTextForeground(*wxGREEN);
 				dc.SetBrush(*wxGREEN_BRUSH);
-				dc.DrawRectangle(wxCoord(100), wxCoord(90 + i * mHeight), wxCoord(static_cast<int>(mAminoAcids[i].percentage * 5000)), wxCoord(30));
-				dc.DrawText(mAminoAcids[i].name, wxPoint(50, 80 + i * mHeight));
+				dc.DrawRectangle(wxCoord(190), wxCoord(70 + i * mHeight), wxCoord(static_cast<int>(mAminoAcids[i].percentage * 50)), wxCoord(30));
+				dc.DrawText(mAminoAcids[i].name, wxPoint(40, 80 + i * mHeight));
 			}
 			else if (i % 3 == 2)
 			{
 				dc.SetTextForeground(*wxBLUE);
 				dc.SetBrush(*wxBLUE_BRUSH);
-				dc.DrawRectangle(wxCoord(100), wxCoord(90 + i * mHeight), wxCoord(static_cast<int>(mAminoAcids[i].percentage * 5000)), wxCoord(30));
-				dc.DrawText(mAminoAcids[i].name, wxPoint(50, 80 + i * mHeight));
+				dc.DrawRectangle(wxCoord(190), wxCoord(70 + i * mHeight), wxCoord(static_cast<int>(mAminoAcids[i].percentage * 50)), wxCoord(30));
+				dc.DrawText(mAminoAcids[i].name, wxPoint(40, 80 + i * mHeight));
 			}
 			i += 1;
 		}
@@ -77,7 +80,8 @@ void DNADrawPanel::Render(wxDC& dc)
 	
 }
 
-void DNADrawPanel::PassInData(std::vector<AminoAcid> aminoAcids)
+void DNADrawPanel::PassInData(std::vector<AminoAcid> aminoAcids, std::string fileName)
 {
 	mAminoAcids = aminoAcids;
+	mFileName = fileName;
 }

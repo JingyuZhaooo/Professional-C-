@@ -89,7 +89,7 @@ void DNAFrame::OnAminoHist(wxCommandEvent& event)
 
 	mAminoAcidHist = AminoAcidHist(mFASTAFile.GetHeader(), mFASTAFile.GetSequence());
 	mAminoAcidHist.Translate();
-	mPanel->PassInData(mAminoAcidHist.GetAminoAcids());
+	mPanel->PassInData(mAminoAcidHist.GetAminoAcids(), mFASTAFile.GetHeader());
 
 
 	

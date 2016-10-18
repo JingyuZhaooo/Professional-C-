@@ -21,7 +21,7 @@ class DNADrawPanel : public wxPanel
 public:
 	DNADrawPanel(wxFrame* parent);
 	void PaintNow();
-	void PassInData(std::vector<AminoAcid> aminoAcids);
+	void PassInData(std::vector<AminoAcid> aminoAcids, std::string fileName);
 protected:
 	void PaintEvent(wxPaintEvent & evt);
 	void Render(wxDC& dc);
@@ -31,5 +31,6 @@ public:
 	// Variables here
 	int mHeight;
 	std::vector<AminoAcid> mAminoAcids;
+	std::string mFileName;
 };
 
