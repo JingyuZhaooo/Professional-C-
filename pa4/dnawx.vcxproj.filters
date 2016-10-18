@@ -35,6 +35,9 @@
     <ClInclude Include="FASTAFile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="AminoAcidHist.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DNAAlignDlg.cpp">
@@ -53,6 +56,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FASTAFile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AminoAcidHist.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

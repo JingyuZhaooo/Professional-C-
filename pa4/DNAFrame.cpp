@@ -18,6 +18,7 @@
 #include "Exceptions.h"
 #include "DNAAlignDlg.h"
 #include <wx/wfstream.h>
+#include "AminoAcidHist.h"
 
 enum
 {
@@ -85,4 +86,7 @@ void DNAFrame::OnAminoHist(wxCommandEvent& event)
 	}
 	std::string fileName = openFileDialog.GetPath();
 	mFASTAFile.Load(fileName);
+
+	AminoAcidHist aminoAcidHist{ mFASTAFile.GetHeader(), mFASTAFile.GetSequence() };
+	aminoAcidHist.Translate();
 }

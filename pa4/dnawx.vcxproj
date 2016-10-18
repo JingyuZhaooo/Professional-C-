@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AminoAcidHist.h" />
     <ClInclude Include="DNAAlignDlg.h" />
     <ClInclude Include="DNAApp.h" />
     <ClInclude Include="DNADrawPanel.h" />
@@ -20,6 +21,7 @@
     <ClInclude Include="Timer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AminoAcidHist.cpp" />
     <ClCompile Include="DNAAlignDlg.cpp" />
     <ClCompile Include="DNAApp.cpp" />
     <ClCompile Include="DNADrawPanel.cpp" />
