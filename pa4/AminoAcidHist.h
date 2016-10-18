@@ -2,21 +2,21 @@
 #include <string>
 #include "FASTAFile.h"
 #include <vector>
+struct AminoAcid
+{
+	std::string name;
+	int count;
+	double percentage;
+};
 
 class AminoAcidHist
 {
 public:
-	struct AminoAcid
-	{
-		std::string name;
-		int count;
-		double percentage;
-	};
-
+	AminoAcidHist();
 	AminoAcidHist(std::string title, std::string sequence);
 	void Translate();
 	void Draw();
-
+	std::vector<AminoAcid> GetAminoAcids() const { return mAminoAcids; };
 private:
 	int mHeight;
 	int mTotalCount;

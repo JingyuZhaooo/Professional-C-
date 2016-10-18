@@ -12,6 +12,7 @@
 #include <wx/menu.h>
 #include <memory>
 #include "FASTAFile.h"
+#include "AminoAcidHist.h"
 
 class DNAFrame : public wxFrame
 {
@@ -28,4 +29,5 @@ private:
 	class DNADrawPanel* mPanel;
 	// Variables here
 	FASTAFile mFASTAFile;
+	AminoAcidHist mAminoAcidHist;
 };

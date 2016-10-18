@@ -12,20 +12,24 @@
 #include <wx/frame.h>
 #include <string>
 #include <memory>
+#include <vector>
+#include "AminoAcidHist.h"
+
 
 class DNADrawPanel : public wxPanel
 {
 public:
 	DNADrawPanel(wxFrame* parent);
 	void PaintNow();
-
+	void PassInData(std::vector<AminoAcid> aminoAcids);
 protected:
 	void PaintEvent(wxPaintEvent & evt);
 	void Render(wxDC& dc);
- 
 	DECLARE_EVENT_TABLE()
 	
 public:
 	// Variables here
+
+	std::vector<AminoAcid> mAminoAcids;
 };
 

@@ -42,4 +42,27 @@ void DNADrawPanel::Render(wxDC& dc)
 	dc.Clear();
 	
 	// TODO: Draw histogram, if one has been generated
+	if (mAminoAcids.size() != 0)
+	{
+		unsigned i = 0;
+		while (i < mAminoAcids.size())
+		{
+			dc.SetPen(*wxBLACK_PEN);
+			if (i % 3 == 0)
+			{
+				dc.SetTextForeground(*wxRED);
+				dc.SetBrush(*wxRED_BRUSH);
+				dc.DrawRectangle(wxCoord(50), wxCoord(90), wxCoord(mAminoAcids[i].count * 10), wxCoord(30));
+				dc.DrawText(mAminoAcids[i].name, wxPoint(50, 90));
+			}
+			i += 1;
+		}
+	}
+	
+	
+}
+
+void DNADrawPanel::PassInData(std::vector<AminoAcid> aminoAcids)
+{
+	mAminoAcids = aminoAcids;
 }
