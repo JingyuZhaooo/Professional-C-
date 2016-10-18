@@ -91,10 +91,11 @@ void DNAFrame::OnAminoHist(wxCommandEvent& event)
 	mAminoAcidHist.Translate();
 	mPanel->PassInData(mAminoAcidHist.GetAminoAcids());
 
-	/*
+
+	
 	for (unsigned i = 0; i < mAminoAcidHist.GetAminoAcids().size(); i++)
 	{
-		std::cout << mAminoAcidHist.GetAminoAcids()[i].name << " :" << mAminoAcidHist.GetAminoAcids()[i].count << std::endl;
+		std::cout << mAminoAcidHist.GetAminoAcids()[i].name << ": " << mAminoAcidHist.GetAminoAcids()[i].count << ": " << mAminoAcidHist.GetAminoAcids()[i].percentage << std::endl;
 	}
-	*/
+	mPanel->PaintNow();
 }

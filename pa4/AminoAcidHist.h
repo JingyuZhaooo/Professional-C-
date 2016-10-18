@@ -18,7 +18,6 @@ public:
 	void Draw();
 	std::vector<AminoAcid> GetAminoAcids() const { return mAminoAcids; };
 private:
-	int mHeight;
 	int mTotalCount;
 	std::string mTitle;
 	std::string mSequence;

@@ -1,5 +1,9 @@
 #include "AminoAcidHist.h"
 
+AminoAcidHist::AminoAcidHist()
+{
+}
+
 AminoAcidHist::AminoAcidHist(std::string title, std::string sequence)
 	: mStateMachine{
 	//  { T, C, A, G }
@@ -30,7 +34,6 @@ AminoAcidHist::AminoAcidHist(std::string title, std::string sequence)
 		{ 'G', 'G', 'G', 'G'},			// 23		GG*
 }
 {
-	mHeight = 30;
 	mTotalCount = 0;
 	mTitle = title;
 	mSequence = sequence;
@@ -82,102 +85,144 @@ void AminoAcidHist::Translate()
 			state = mStateMachine[state][3];
 		}
 
-		if (!isdigit(state))		// if we are not getting an int (getting a char)
+		if (state >= 'A')		// if we are not getting an int (getting a char)
 		{
-			state = 3;				// set the state back to 3
 			switch (state)			// add number to the corresponding amino acid
 			{
 				case 'A':
+				{
 					mAminoAcids[0].count += 1;
 					mTotalCount += 1;
 					break;
+				}
 				case 'C':
+				{
 					mAminoAcids[1].count += 1;
 					mTotalCount += 1;
 					break;
+				}
 				case 'D':
+				{
 					mAminoAcids[2].count += 1;
 					mTotalCount += 1;
 					break;
+				}
 				case 'E':
+				{
 					mAminoAcids[3].count += 1;
 					mTotalCount += 1;
 					break;
+				}
 				case 'F':
+				{
 					mAminoAcids[4].count += 1;
 					mTotalCount += 1;
 					break;
+				}
 				case 'G':
+				{
 					mAminoAcids[5].count += 1;
 					mTotalCount += 1;
 					break;
+				}
 				case 'H':
+				{
 					mAminoAcids[6].count += 1;
 					mTotalCount += 1;
 					break;
+				}
 				case 'I':
+				{
 					mAminoAcids[7].count += 1;
 					mTotalCount += 1;
 					break;
+				}
 				case 'K':
+				{
 					mAminoAcids[8].count += 1;
 					mTotalCount += 1;
 					break;
+				}
 				case 'L':
+				{
 					mAminoAcids[9].count += 1;
 					mTotalCount += 1;
 					break;
+				}
 				case 'M':
+				{
 					mAminoAcids[10].count += 1;
 					mTotalCount += 1;
 					break;
+				}
 				case 'N':
+				{
 					mAminoAcids[11].count += 1;
 					mTotalCount += 1;
 					break;
+				}
 				case 'P':
+				{
 					mAminoAcids[12].count += 1;
 					mTotalCount += 1;
 					break;
+				}
 				case 'Q':
+				{
 					mAminoAcids[13].count += 1;
 					mTotalCount += 1;
 					break;
+				}
 				case 'R':
+				{
 					mAminoAcids[14].count += 1;
 					mTotalCount += 1;
 					break;
+				}
 				case 'S':
+				{
 					mAminoAcids[15].count += 1;
 					mTotalCount += 1;
 					break;
+				}
 				case 'T':
+				{
 					mAminoAcids[16].count += 1;
 					mTotalCount += 1;
 					break;
+				}
 				case 'V':
+				{
 					mAminoAcids[17].count += 1;
 					mTotalCount += 1;
 					break;
+				}
 				case 'W':
+				{
 					mAminoAcids[18].count += 1;
 					mTotalCount += 1;
 					break;
+				}
 				case 'Y':
+				{
 					mAminoAcids[19].count += 1;
 					mTotalCount += 1;
 					break;
+				}
 				case 'Z':				// if we get a Stop amino acid, set state back to 0
+				{
 					state = 0;
 					break;
+				}
 			}
+			state = 3;				// set the state back to 3
 		}
 	}
 	for (auto& i : mAminoAcids)		// calculate each amino acid's percentage
 	{
 		if (mTotalCount != 0)
 		{
-			i.percentage = i.count / mTotalCount;
+			i.percentage = static_cast<float>(i.count) / static_cast<float>(mTotalCount);
 		}
 	}
 }

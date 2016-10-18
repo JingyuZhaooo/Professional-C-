@@ -29,7 +29,7 @@ protected:
 	
 public:
 	// Variables here
-
+	int mHeight;
 	std::vector<AminoAcid> mAminoAcids;
 };
 

@@ -20,7 +20,7 @@ END_EVENT_TABLE()
 DNADrawPanel::DNADrawPanel(wxFrame* parent)
 : wxPanel(parent)
 {
-	
+	mHeight = 30;
 }
 
 void DNADrawPanel::PaintEvent(wxPaintEvent & evt)
@@ -44,6 +44,7 @@ void DNADrawPanel::Render(wxDC& dc)
 	// TODO: Draw histogram, if one has been generated
 	if (mAminoAcids.size() != 0)
 	{
+		
 		unsigned i = 0;
 		while (i < mAminoAcids.size())
 		{
@@ -52,8 +53,22 @@ void DNADrawPanel::Render(wxDC& dc)
 			{
 				dc.SetTextForeground(*wxRED);
 				dc.SetBrush(*wxRED_BRUSH);
-				dc.DrawRectangle(wxCoord(50), wxCoord(90), wxCoord(mAminoAcids[i].count * 10), wxCoord(30));
-				dc.DrawText(mAminoAcids[i].name, wxPoint(50, 90));
+				dc.DrawRectangle(wxCoord(100), wxCoord(90 + i * mHeight), wxCoord(static_cast<int>(mAminoAcids[i].percentage * 5000)), wxCoord(30));
+				dc.DrawText(mAminoAcids[i].name, wxPoint(50, 80 + i * mHeight));
+			}
+			else if (i % 3 == 1)
+			{
+				dc.SetTextForeground(*wxGREEN);
+				dc.SetBrush(*wxGREEN_BRUSH);
+				dc.DrawRectangle(wxCoord(100), wxCoord(90 + i * mHeight), wxCoord(static_cast<int>(mAminoAcids[i].percentage * 5000)), wxCoord(30));
+				dc.DrawText(mAminoAcids[i].name, wxPoint(50, 80 + i * mHeight));
+			}
+			else if (i % 3 == 2)
+			{
+				dc.SetTextForeground(*wxBLUE);
+				dc.SetBrush(*wxBLUE_BRUSH);
+				dc.DrawRectangle(wxCoord(100), wxCoord(90 + i * mHeight), wxCoord(static_cast<int>(mAminoAcids[i].percentage * 5000)), wxCoord(30));
+				dc.DrawText(mAminoAcids[i].name, wxPoint(50, 80 + i * mHeight));
 			}
 			i += 1;
 		}
