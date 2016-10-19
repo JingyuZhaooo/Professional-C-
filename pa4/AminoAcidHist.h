@@ -15,7 +15,6 @@ public:
 	AminoAcidHist();
 	AminoAcidHist(std::string title, std::string sequence);
 	void Translate();
-	void Draw();
 	std::vector<AminoAcid> GetAminoAcids() const { return mAminoAcids; };
 private:
 	int mTotalCount;

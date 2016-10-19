@@ -22,13 +22,15 @@
 
 enum
 {
-	ID_AMINO_HIST=1000,
+	ID_AMINO_HIST = 1000,
+	ID_PAIRWISE_ALIGNMENT = 1001
 };
 
 wxBEGIN_EVENT_TABLE(DNAFrame, wxFrame)
 	EVT_MENU(wxID_EXIT, DNAFrame::OnExit)
 	EVT_MENU(wxID_NEW, DNAFrame::OnNew)
 	EVT_MENU(ID_AMINO_HIST, DNAFrame::OnAminoHist)
+	EVT_MENU(ID_PAIRWISE_ALIGNMENT, DNAFrame::OnPairwiseAlignment)
 wxEND_EVENT_TABLE()
 
 DNAFrame::DNAFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
@@ -39,6 +41,7 @@ DNAFrame::DNAFrame(const wxString& title, const wxPoint& pos, const wxSize& size
 	menuFile->Append(wxID_NEW);
 	menuFile->Append(ID_AMINO_HIST, "Amino Acid Histogram...",
 					 "Create a histogram from a FASTA file.");
+	menuFile->Append(ID_PAIRWISE_ALIGNMENT, "Pairwise Sequence Alignment...");
 	menuFile->Append(wxID_EXIT);
 	
 	wxMenuBar* menuBar = new wxMenuBar;
@@ -98,4 +101,24 @@ void DNAFrame::OnAminoHist(wxCommandEvent& event)
 		std::cout << mAminoAcidHist.GetAminoAcids()[i].name << ": " << mAminoAcidHist.GetAminoAcids()[i].count << ": " << mAminoAcidHist.GetAminoAcids()[i].percentage << std::endl;
 	}
 	mPanel->PaintNow();
+}
+
+void DNAFrame::OnPairwiseAlignment(wxCommandEvent & event)
+{
+	DNAAlignDlg dNAAlignDlg;
+	if (dNAAlignDlg.ShowModal() == wxID_OK) //if the user correctly selected two input FASTA files and one output file
+	{
+		std::string fileAName = dNAAlignDlg.GetInputAPath();
+		std::string fileBName = dNAAlignDlg.GetInputBPath();
+		std::string fileOutputName = dNAAlignDlg.GetOutputPath();
+		FASTAFile FASTAFileA;
+		FASTAFile FASTAFileB;
+		wxBusyInfo info("Calculating pairwise match...", this); // display to the user as it¡¯s working:
+		FASTAFileA.Load(fileAName);
+		FASTAFileB.Load(fileBName);
+		mNeedlemanWunsch = NeedlemanWunsch(FASTAFileA, FASTAFileB);
+		mNeedlemanWunsch.Run();
+	}
+		
+	
 }

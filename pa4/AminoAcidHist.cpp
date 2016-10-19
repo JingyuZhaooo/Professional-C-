@@ -241,6 +241,3 @@ void AminoAcidHist::Translate()
 	}
 }
 
-void AminoAcidHist::Draw()
-{
-}

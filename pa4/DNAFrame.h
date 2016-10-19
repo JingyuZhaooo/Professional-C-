@@ -13,6 +13,7 @@
 #include <memory>
 #include "FASTAFile.h"
 #include "AminoAcidHist.h"
+#include "NeedlemanWunsch.h"
 
 class DNAFrame : public wxFrame
 {
@@ -22,7 +23,7 @@ private:
 	void OnExit(wxCommandEvent& event);
 	void OnNew(wxCommandEvent& event);
 	void OnAminoHist(wxCommandEvent& event);
-	
+	void OnPairwiseAlignment(wxCommandEvent& event);
 	wxDECLARE_EVENT_TABLE();
 private:
 	// Panel for drawing
@@ -30,4 +31,5 @@ private:
 	// Variables here
 	FASTAFile mFASTAFile;
 	AminoAcidHist mAminoAcidHist;
+	NeedlemanWunsch mNeedlemanWunsch;
 };

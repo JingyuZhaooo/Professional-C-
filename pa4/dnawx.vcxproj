@@ -18,6 +18,7 @@
     <ClInclude Include="DNAFrame.h" />
     <ClInclude Include="Exceptions.h" />
     <ClInclude Include="FASTAFile.h" />
+    <ClInclude Include="NeedlemanWunsch.h" />
     <ClInclude Include="Timer.h" />
   </ItemGroup>
   <ItemGroup>
@@ -27,6 +28,7 @@
     <ClCompile Include="DNADrawPanel.cpp" />
     <ClCompile Include="DNAFrame.cpp" />
     <ClCompile Include="FASTAFile.cpp" />
+    <ClCompile Include="NeedlemanWunsch.cpp" />
     <ClCompile Include="Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
