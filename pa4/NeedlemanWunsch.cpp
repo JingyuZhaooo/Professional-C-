@@ -1,4 +1,6 @@
 #include "NeedlemanWunsch.h"
+#include <fstream>
+#include <cmath>
 
 NeedlemanWunsch::NeedlemanWunsch()
 {
@@ -76,10 +78,9 @@ void NeedlemanWunsch::Run()
 			mCells[i][j] = scoreSelected;
 		}
 	}
+	mFinalScore = mCells[sequenceBLength][sequenceALength]; // save the final score
 	// Implementation Part 5
-	std::string resultA;		// preallocate memory for the resultant strings
-	std::string resultB;
-	resultA.reserve(sequenceALength + sequenceBLength);
+	resultA.reserve(sequenceALength + sequenceBLength);// preallocate memory for the resultant strings
 	resultB.reserve(sequenceALength + sequenceBLength);
 	unsigned rowNum = sequenceBLength;
 	unsigned columnNum = sequenceALength;
@@ -115,11 +116,54 @@ void NeedlemanWunsch::Run()
 	// reverse the resultant strings
 	std::reverse(resultA.begin(), resultA.end());
 	std::reverse(resultB.begin(), resultB.end());
-	std::cout << resultA << std::endl;
-	std::cout << resultB << std::endl;
 }
 
-void NeedlemanWunsch::Output()
+void NeedlemanWunsch::Output(std::string path)
 {
-	
+	std::ofstream mFile;
+	mFile.open(path);
+	mFile << "A: " << mFASTAFileA.GetHeader() << "\n";
+	mFile << "B: " << mFASTAFileB.GetHeader() << "\n";
+	mFile << "Score: " << mFinalScore << "\n\n";
+	int count = static_cast<int>(std::floor(resultA.length() / 70));
+	for (int i = 0; i < count; i++)
+	{
+		std::string substrA = resultA.substr(i * 70, 70);
+		std::string substrB = resultB.substr(i * 70, 70);
+		std::string middleLine;
+		for (int j = 0; j < 70; j++)
+		{
+			if (substrA[j] == substrB[j])
+			{
+				middleLine += "|";
+			}
+			else
+			{
+				middleLine += " ";
+			}
+		}
+		substrA += "\n";
+		middleLine += "\n";
+		substrB += "\n\n";
+		mFile << substrA << middleLine << substrB;
+	}
+	std::string substrA = resultA.substr(count * 70);
+	std::string substrB = resultB.substr(count * 70);
+	std::string middleLine;
+	for (unsigned i = 0; i < substrA.length(); i++)
+	{
+		if (substrA[i] == substrB[i])
+		{
+			middleLine += "|";
+		}
+		else
+		{
+			middleLine += " ";
+		}
+	}
+	substrA += "\n";
+	middleLine += "\n";
+	substrB += "\n\n";
+	mFile << substrA << middleLine << substrB;
+	mFile.close();
 }

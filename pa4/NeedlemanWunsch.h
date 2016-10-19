@@ -14,7 +14,7 @@ public:
 	NeedlemanWunsch();
 	NeedlemanWunsch(FASTAFile fastaFileA, FASTAFile fastaFileB);
 	void Run();
-	void Output();
+	void Output(std::string path);
 private:
 	short MatchScore;
 	short MisMatchScore;
@@ -23,4 +23,7 @@ private:
 	FASTAFile mFASTAFileB;
 	std::vector<std::vector<short>> mCells;
 	std::vector<std::vector<Direction>> mPointers;
+	int mFinalScore;
+	std::string resultA;
+	std::string resultB;
 };

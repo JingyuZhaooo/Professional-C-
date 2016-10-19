@@ -16,8 +16,6 @@ void FASTAFile::Load(std::string filePath)
 	myFASTA.open(filePath, std::ios::in | std::ios::ate);
 	if (myFASTA.is_open())
 	{
-		Timer timer;
-		timer.Start();
 		size = myFASTA.tellg(); // Save the size of the file
 		myFASTA.seekg(0, std::ios::beg); // Seek back to start of file
 		mSequence.reserve(static_cast<int>(size));
@@ -40,7 +38,6 @@ void FASTAFile::Load(std::string filePath)
 		else
 		{
 			mHeader = str.substr(1); // store the header
-			std::cout << mHeader << std::endl;
 			while (!myFASTA.eof())
 			{
 				char newChar;
@@ -67,11 +64,6 @@ void FASTAFile::Load(std::string filePath)
 					return;
 				}
 			}
-			std::cout << mSequence << std::endl;
 		}
-			
-		
-		double elapsed = timer.GetElapsed();
-		std::cout << "Loading the FASTA file takes: " << elapsed << " seconds" << std::endl;
 	}
 }

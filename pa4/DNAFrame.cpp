@@ -18,6 +18,7 @@
 #include "Exceptions.h"
 #include "DNAAlignDlg.h"
 #include <wx/wfstream.h>
+#include "Timer.h"
 
 
 enum
@@ -94,12 +95,14 @@ void DNAFrame::OnAminoHist(wxCommandEvent& event)
 	mAminoAcidHist.Translate();
 	mPanel->PassInData(mAminoAcidHist.GetAminoAcids(), mFASTAFile.GetHeader());
 
-
-	
+	/*
+	//Testing
 	for (unsigned i = 0; i < mAminoAcidHist.GetAminoAcids().size(); i++)
 	{
 		std::cout << mAminoAcidHist.GetAminoAcids()[i].name << ": " << mAminoAcidHist.GetAminoAcids()[i].count << ": " << mAminoAcidHist.GetAminoAcids()[i].percentage << std::endl;
 	}
+	*/
+
 	mPanel->PaintNow();
 }
 
@@ -108,6 +111,8 @@ void DNAFrame::OnPairwiseAlignment(wxCommandEvent & event)
 	DNAAlignDlg dNAAlignDlg;
 	if (dNAAlignDlg.ShowModal() == wxID_OK) //if the user correctly selected two input FASTA files and one output file
 	{
+		Timer timer;
+		timer.Start();
 		std::string fileAName = dNAAlignDlg.GetInputAPath();
 		std::string fileBName = dNAAlignDlg.GetInputBPath();
 		std::string fileOutputName = dNAAlignDlg.GetOutputPath();
@@ -118,6 +123,11 @@ void DNAFrame::OnPairwiseAlignment(wxCommandEvent & event)
 		FASTAFileB.Load(fileBName);
 		mNeedlemanWunsch = NeedlemanWunsch(FASTAFileA, FASTAFileB);
 		mNeedlemanWunsch.Run();
+		mNeedlemanWunsch.Output(fileOutputName);
+
+
+		double elapsed = timer.GetElapsed();
+		std::cout << "Generating Global Pairwise Match took: " << elapsed << " seconds" << std::endl;
 	}
 		
 	
