@@ -44,7 +44,7 @@ void NeedlemanWunsch::Run()
 		mCells[0][i] = i * GapScore;
 		mPointers[0][i] = Left;			// cells on the first row (except cell[0][0]) all points to the left
 	}
-	// Implementation Part 3
+	// Implementation Part 3 and 4
 	for (unsigned i = 1; i <= sequenceBLength; i++)
 	{
 		for (unsigned j = 1; j <= sequenceALength; j++)
@@ -76,18 +76,47 @@ void NeedlemanWunsch::Run()
 			mCells[i][j] = scoreSelected;
 		}
 	}
-
-
-
-	// testing
-	for (unsigned i = 1; i <= sequenceBLength; i++)
+	// Implementation Part 5
+	std::string resultA;		// preallocate memory for the resultant strings
+	std::string resultB;
+	resultA.reserve(sequenceALength + sequenceBLength);
+	resultB.reserve(sequenceALength + sequenceBLength);
+	unsigned rowNum = sequenceBLength;
+	unsigned columnNum = sequenceALength;
+	while (rowNum != 0 || columnNum != 0) // while we do not reach cell[0][0]
 	{
-		for (unsigned j = 1; j <= sequenceALength; j++)
+		Direction currDirection = mPointers[rowNum][columnNum];
+		switch (currDirection)
 		{
-			std::cout << mCells[i][j] << std::endl;
+			case AboveLeft: // if the arrow is AboveLeft, write each letter into the corresponding sequence
+			{
+				resultA += sequenceA[columnNum - 1];
+				resultB += sequenceB[rowNum - 1];
+				rowNum -= 1;
+				columnNum -= 1;
+				break;
+			}
+			case Left:	// if the arrow is Left, write the letter in sequence A, write blank in sequence B
+			{
+				resultA += sequenceA[columnNum - 1];
+				resultB += "_";
+				columnNum -= 1;
+				break;
+			}
+			case Above:		// if the arrow is Above, write the letter in sequence B, write blank in sequence A
+			{
+				resultA += "_";
+				resultB += sequenceB[rowNum - 1];
+				rowNum -= 1;
+				break;
+			}
 		}
 	}
-	
+	// reverse the resultant strings
+	std::reverse(resultA.begin(), resultA.end());
+	std::reverse(resultB.begin(), resultB.end());
+	std::cout << resultA << std::endl;
+	std::cout << resultB << std::endl;
 }
 
 void NeedlemanWunsch::Output()
