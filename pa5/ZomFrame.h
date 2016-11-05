@@ -23,7 +23,10 @@ private:
 	void OnNew(wxCommandEvent& event);
 	void OnSimStart(wxCommandEvent& event);
 	void OnTurnTimer(wxTimerEvent& event);
-	
+	void OnLoadZombie(wxCommandEvent& event);
+	void OnLoadSurvivor(wxCommandEvent& event);
+	void OnRandomize(wxCommandEvent& event);
+	void OnReset(wxCommandEvent& event);
 	wxDECLARE_EVENT_TABLE();
 private:
 	// Panel for drawing
@@ -39,6 +42,14 @@ private:
 	MachineState zombieTestState;
 	Machine<ZombieTraits> zombieMachine;
 	// END TEMP CODE
-	
+	std::shared_ptr<Machine<ZombieTraits>> mZombieMachine;
+	std::shared_ptr<Machine<HumanTraits>> mSurvivorMachine;
+	std::shared_ptr<World> mWorld;
 	bool mIsActive;
+
+	std::string mZombieFileName;
+	std::string mSurvivorFileName;
+	std::vector<std::vector<bool>> emptyTiles; // 2D vector used to track which tiles are occupied already
+	bool mEnableFlag1; // True if a zombie file is loaded
+	bool mEnableFlag2; // True if a survivor file is loaded
 };
