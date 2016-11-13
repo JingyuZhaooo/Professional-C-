@@ -28,11 +28,11 @@ NBlock* g_MainBlock = nullptr;
 /* Terminal symbols */
 %token <string> TINTEGER
 %token <token> TLBRACE TRBRACE TSEMI TLPAREN TRPAREN
-%token <token> TMAIN TROTATE
+%token <token> TMAIN TROTATE TFORWARD TIF TELSE TISZOMBIE TISHUMAN TATTACK
 
 /* Statements */
 %type <block> main_loop block
-%type <statement> statement rotate
+%type <statement> statement rotate ifelse is_zombie is_human attack
  
 /* Expressions */
 %type <numeric> numeric
@@ -42,16 +42,35 @@ NBlock* g_MainBlock = nullptr;
 main_loop	: TMAIN TLBRACE block TRBRACE { std::cout << "Main entry point found!" << std::endl; }
 ;
 
-block		: statement { std::cout << "Single statement" << std::endl; }
+block		: statement { std::cout << "Single statement" << std::endl; }	
+			| block statement { std::cout << "Multiple statements" << std::endl; }
 /* TODO: Add support for multiple statements in a block */
 ;
 
-statement	: rotate TSEMI
+statement	: rotate TSEMI | forward TSEMI | ifelse | bool | is_zombie | is_human | attack TSEMI
 ;
-			
+	
+bool		: is_zombie | is_human
+;
+		
 rotate		: TROTATE TLPAREN numeric TRPAREN { std::cout << "Rotate command" << std::endl; }
 ;
-			
+
+forward		: TFORWARD TLPAREN TRPAREN { std::cout << "Forward command" << std::endl; }
+;		
+	
+ifelse		: TIF TLPAREN bool TRPAREN { std::cout << "If else command" << std::endl; } TLBRACE block TRBRACE TELSE TLBRACE block TRBRACE { std::cout << "Else command" << std::endl; }
+;
+
+is_zombie	: TISZOMBIE TLPAREN numeric TRPAREN { std::cout << "Is_zombie statement" << std::endl; }
+;
+
+is_human	: TISHUMAN TLPAREN numeric TRPAREN  { std::cout << "Is_human statement" << std::endl; }
+;
+
+attack		: TATTACK TLPAREN TRPAREN { std::cout << "Attack command" << std::endl; }
+;
+
 numeric		: TINTEGER { std::cout << "Numeric value of " << *($1) << std::endl; }
 ;
 
