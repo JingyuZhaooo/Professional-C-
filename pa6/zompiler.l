@@ -33,7 +33,7 @@ int g_LineNumber = 1;
 
 "rotate"				{ return TOKEN(TROTATE); }
 "forward"				{ return TOKEN(TFORWARD); }
-\/\/.*\n				{ g_LineNumber++;}
+"//".*"\n"				{ g_LineNumber++;}
 "if"					{ return TOKEN(TIF); }
 "else"					{ return TOKEN(TELSE); }
 "is_zombie"				{ return TOKEN(TISZOMBIE);}

@@ -32,3 +32,32 @@ void NRotate::CodeGen(CodeContext& context) const
 		context.mOps.push_back("rotate,1");
 	}
 }
+
+void NForward::CodeGen(CodeContext & context) const
+{
+	
+}
+
+void NIs_Zombie::CodeGen(CodeContext & context) const
+{
+}
+
+void NIs_Human::CodeGen(CodeContext & context) const
+{
+}
+
+void NIs_Passable::CodeGen(CodeContext & context) const
+{
+}
+
+void NIs_random::CodeGen(CodeContext & context) const
+{
+}
+
+void NAttack::CodeGen(CodeContext & context) const
+{
+}
+
+void NRanged_Attack::CodeGen(CodeContext & context) const
+{
+}

@@ -52,3 +52,53 @@ private:
 	std::list<NStatement*> mStatements;
 	bool mbMainBlock;
 };
+
+class NForward : public NStatement
+{
+public:
+	NForward() {};
+	virtual void CodeGen(CodeContext& context) const override;
+};
+
+
+class NIs_Zombie : public NBoolean
+{
+public:
+	NIs_Zombie(NNumeric* num) { mNum = num; };
+	virtual void CodeGen(CodeContext& context) const override;
+private:
+	NNumeric* mNum;
+};
+
+class NIs_Human : public NBoolean
+{
+public:
+	NIs_Human(NNumeric* num) { mNum = num; };
+	virtual void CodeGen(CodeContext& context) const override;
+private:
+	NNumeric* mNum;
+};
+
+class NIs_Passable : public NBoolean
+{
+public:
+	virtual void CodeGen(CodeContext& context) const override;
+};
+
+class NIs_random : public NBoolean
+{
+public:
+	virtual void CodeGen(CodeContext& context) const override;
+};
+
+class NAttack : public NStatement
+{
+public:
+	virtual void CodeGen(CodeContext& context) const override;
+};
+
+class NRanged_Attack : public NStatement
+{
+public:
+	virtual void CodeGen(CodeContext& context) const override;
+};
