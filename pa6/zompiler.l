@@ -39,6 +39,9 @@ int g_LineNumber = 1;
 "is_zombie"				{ return TOKEN(TISZOMBIE);}
 "is_human"				{ return TOKEN(TISHUMAN); }
 "attack"				{ return TOKEN(TATTACK); }
+"is_passable"			{ return TOKEN(TISPASSABLE); }
+"is_random"				{ return TOKEN(TISRANDOM); }
+"ranged_attack"			{ return TOKEN(TRANGEDATTACK); }
 %{
 /* Do not add any of your own tokens below this line!!!! */
 %}
