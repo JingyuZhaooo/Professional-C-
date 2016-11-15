@@ -56,7 +56,6 @@ private:
 class NForward : public NStatement
 {
 public:
-	NForward() {};
 	virtual void CodeGen(CodeContext& context) const override;
 };
 

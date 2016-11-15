@@ -32,8 +32,9 @@ NBlock* g_MainBlock = nullptr;
 
 /* Statements */
 %type <block> main_loop block
-%type <statement> statement rotate ifelse is_zombie is_human attack is_passable is_random ranged_attack
- 
+%type <statement> statement rotate ifelse attack ranged_attack forward
+%type <boolean> boolean is_zombie is_passable is_human is_random
+
 /* Expressions */
 %type <numeric> numeric
 
@@ -47,37 +48,38 @@ block		: statement { std::cout << "Single statement" << std::endl; $$ = new NBlo
 /* TODO: Add support for multiple statements in a block */
 ;
 
-statement	: rotate TSEMI | forward TSEMI | ifelse | bool | is_zombie | is_human | attack TSEMI | is_passable | is_random | ranged_attack TSEMI
+statement	: rotate TSEMI | ranged_attack TSEMI | forward TSEMI | ifelse | attack TSEMI 
 ;
 	
-bool		: is_zombie | is_human | is_passable | is_random
+boolean		: is_zombie | is_human | is_passable | is_random
 ;
 		
 rotate		: TROTATE TLPAREN numeric TRPAREN { std::cout << "Rotate command" << std::endl; $$ = new NRotate($3); }
 ;
 
-forward		: TFORWARD TLPAREN TRPAREN { std::cout << "Forward command" << std::endl;}
+forward		: TFORWARD TLPAREN TRPAREN { std::cout << "Forward command" << std::endl; $$ = new NForward(); }
 ;		
 	
-ifelse		: TIF TLPAREN bool TRPAREN { std::cout << "If command" << std::endl; } TLBRACE block TRBRACE TELSE TLBRACE block TRBRACE { std::cout << "Else command" << std::endl; }
+ifelse		: TIF TLPAREN boolean TRPAREN { std::cout << "If command" << std::endl; } TLBRACE block TRBRACE TELSE TLBRACE block TRBRACE { std::cout << "Else command" << std::endl; }
 ;
 
-is_zombie	: TISZOMBIE TLPAREN numeric TRPAREN { std::cout << "Is_zombie statement" << std::endl; }
+is_zombie	: TISZOMBIE TLPAREN numeric TRPAREN { std::cout << "Is_zombie statement" << std::endl; $$ = new NIs_Zombie($3); }
 ;
 
-is_human	: TISHUMAN TLPAREN numeric TRPAREN  { std::cout << "Is_human statement" << std::endl;  }
+is_human	: TISHUMAN TLPAREN numeric TRPAREN  { std::cout << "Is_human statement" << std::endl;  $$ = new NIs_Human($3); }
 ;
 
 attack		: TATTACK TLPAREN TRPAREN { std::cout << "Attack command" << std::endl; $$ = new NAttack(); }
 ;
 
-is_passable	: TISPASSABLE TLPAREN TRPAREN { std::cout << "Is_passable statement" << std::endl; }
+is_passable	: TISPASSABLE TLPAREN TRPAREN { std::cout << "Is_passable statement" << std::endl; $$ = new NIs_Passable(); }
 ;
 
-is_random	: TISRANDOM TLPAREN TRPAREN { std::cout << "Is_random statement" << std::endl;  }
+is_random	: TISRANDOM TLPAREN TRPAREN { std::cout << "Is_random statement" << std::endl; $$ = new NIs_random(); }
 ;
 
-ranged_attack	: TATTACK TLPAREN TRPAREN { std::cout << "Ranged_attack command" << std::endl; }
+ranged_attack	: TRANGEDATTACK TLPAREN TRPAREN { std::cout << "Ranged_attack command" << std::endl; $$ = new NRanged_Attack(); }
+;
 
 numeric		: TINTEGER { std::cout << "Numeric value of " << *($1) << std::endl; }
 ;
