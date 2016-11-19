@@ -24,10 +24,21 @@ int main(int argc, char* argv[])
 	zompilerparse();
 	
 	// TODO: CodeGen from g_MainBlock
-	
+	CodeContext myContext;
+	if (g_MainBlock != nullptr)
+	{
+		g_MainBlock->CodeGen(myContext);
+	}
 	// Close the file stream
 	fclose(zompilerin);
 
+	std::ofstream mFile;
+	mFile.open("out.zom");
+	for (std::string i : myContext.mOps)
+	{
+		mFile << i << "\n";
+	}
+	mFile.close();
 	return 0;
 }
 

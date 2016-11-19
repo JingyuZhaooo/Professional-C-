@@ -45,13 +45,21 @@ main_loop	: TMAIN TLBRACE block TRBRACE { std::cout << "Main entry point found!"
 
 block		: statement { std::cout << "Single statement" << std::endl; $$ = new NBlock(); $$->AddStatement($1); }	
 			| block statement { std::cout << "Multiple statements" << std::endl; $$->AddStatement($2); }
+
 /* TODO: Add support for multiple statements in a block */
 ;
 
-statement	: rotate TSEMI | ranged_attack TSEMI | forward TSEMI | ifelse | attack TSEMI 
+statement	: rotate TSEMI { $$ = $1; }
+			| ranged_attack TSEMI { $$ = $1; }
+			| forward TSEMI { $$ = $1; }
+			| ifelse { $$ = $1; }
+			| attack TSEMI { $$ = $1; }
 ;
 	
-boolean		: is_zombie | is_human | is_passable | is_random
+boolean		: is_zombie { $$ = $1; }
+			| is_human { $$ = $1; }
+			| is_passable { $$ = $1; }
+			| is_random { $$ = $1; }
 ;
 		
 rotate		: TROTATE TLPAREN numeric TRPAREN { std::cout << "Rotate command" << std::endl; $$ = new NRotate($3); }
@@ -60,7 +68,7 @@ rotate		: TROTATE TLPAREN numeric TRPAREN { std::cout << "Rotate command" << std
 forward		: TFORWARD TLPAREN TRPAREN { std::cout << "Forward command" << std::endl; $$ = new NForward(); }
 ;		
 	
-ifelse		: TIF TLPAREN boolean TRPAREN { std::cout << "If command" << std::endl; } TLBRACE block TRBRACE TELSE TLBRACE block TRBRACE { std::cout << "Else command" << std::endl; }
+ifelse		: TIF TLPAREN boolean TRPAREN TLBRACE block TRBRACE TELSE TLBRACE block TRBRACE { std::cout << "ifelse command" << std::endl; $$ = new NIfelse($3, $6, $10); }
 ;
 
 is_zombie	: TISZOMBIE TLPAREN numeric TRPAREN { std::cout << "Is_zombie statement" << std::endl; $$ = new NIs_Zombie($3); }
@@ -81,7 +89,7 @@ is_random	: TISRANDOM TLPAREN TRPAREN { std::cout << "Is_random statement" << st
 ranged_attack	: TRANGEDATTACK TLPAREN TRPAREN { std::cout << "Ranged_attack command" << std::endl; $$ = new NRanged_Attack(); }
 ;
 
-numeric		: TINTEGER { std::cout << "Numeric value of " << *($1) << std::endl; }
+numeric		: TINTEGER { std::cout << "Numeric value of " << *($1) << std::endl; $$ = new NNumeric(*$1); }
 ;
 
 %%

@@ -8,6 +8,7 @@
 struct CodeContext
 {
 	std::vector<std::string> mOps;
+	std::map<int, int> mGotoMap;
 };
 
 class Node
@@ -100,4 +101,15 @@ class NRanged_Attack : public NStatement
 {
 public:
 	virtual void CodeGen(CodeContext& context) const override;
+};
+
+class NIfelse : public NStatement
+{
+public:
+	NIfelse(NBoolean* boolean, NBlock* block1, NBlock* block2);
+	virtual void CodeGen(CodeContext& context) const override;
+private:
+	NBoolean* mBool;
+	NBlock* mBlock1;
+	NBlock* mBlock2;
 };
