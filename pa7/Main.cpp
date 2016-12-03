@@ -37,13 +37,17 @@ int main(int argc, const char* argv[])
 	}
 	else
 	{
-		outputInitPop(initRandPop, output);
+		OutputInitPop(initRandPop, output);
 
 	}
 
 	// Compute the fitness of each member of the population
-//	std::vector<std::pair<int, double>> fitness = ComputeFitness(population, locations);
-
-
+	std::vector<std::pair<int, double>> fitness = ComputeFitness(initRandPop, Location);
+	// Output the Fitness result
+	output << "FITNESS:" << std::endl;
+	for (auto &i : fitness)
+	{
+		output << i.first << ":" << i.second << std::endl;
+	}
 	return 0;
 }

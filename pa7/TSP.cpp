@@ -56,7 +56,7 @@ std::vector<int> ShuffleNumbers(std::mt19937 & random, int numOfLoc)
 	return initialVec;
 }
 
-void outputInitPop(std::vector<std::vector<int>>& population, std::ofstream& output)
+void OutputInitPop(std::vector<std::vector<int>>& population, std::ofstream& output)
 {
 	output << "INITIAL POPULATION:" << std::endl;
 	for (std::vector<int>& i : population)
@@ -73,12 +73,55 @@ void outputInitPop(std::vector<std::vector<int>>& population, std::ofstream& out
 	}
 }
 
-std::vector<std::pair<int, double>> ComputeFitness(const std::vector<std::vector<int>>& population, const std::vector<Location>& locations)
+std::vector<std::pair<int, double>> ComputeFitness(std::vector<std::vector<int>>& population, std::vector<Location>& locations)
 {
 	std::vector<std::pair<int, double>> fitness(population.size());
 	int i = -1;
-	//std::generate(fitness.begin(),)
-
-
-	return std::vector<std::pair<int, double>>();
+	std::generate(fitness.begin(), fitness.end(), [&population, &i, &locations]
+	{
+		i++;
+		return CalcEachFitScore(population[i], i, locations);	// Calaulate each pair
+	});
+	return fitness;
 }
+
+std::pair<int, double> CalcEachFitScore(std::vector<int>& populationNums, int& i, std::vector<Location>& locations)
+{
+	std::pair<int, double> retVal;
+	retVal.first = i;				// the first number in the pair is the index
+	std::vector<std::pair<double, double>> longLats = GetLongLats(populationNums, locations);		// Get the Longitude/Latitude pair of every stop
+	std::vector<double> distances(longLats.size());
+	int j = -1;
+	std::generate(distances.begin(), distances.end() - 1, [&longLats, &j]() {
+		j++;
+		return Haversine(longLats[j], longLats[j + 1]);									// Calculate the distance between each stop
+	});
+	double sum = Haversine(longLats[longLats.size() - 1], longLats[0]);					// Get the distance from the last stop back to LAX
+	sum = std::accumulate(distances.begin(), distances.end(), sum, [&sum](const double& a, const double& b) {		// Add the distances up using Sum Vector
+		return a + b;
+	});
+	retVal.second = sum;
+	return retVal;
+}
+
+std::vector<std::pair<double, double>> GetLongLats(std::vector<int>& indices, std::vector<Location>& locations)
+{
+	std::vector<std::pair<double, double>> longLats(indices.size());
+	int i = -1;
+	std::generate(longLats.begin(), longLats.end(), [&indices, &i, &locations]() {
+		i++;
+		return std::make_pair(locations[indices[i]].mLatitude, locations[indices[i]].mLongitude);	// Get the corresponding Latitude and Longitude
+	});
+	return longLats;
+}
+
+double Haversine(std::pair<double, double>& start, std::pair<double, double>& stop)
+{
+	double multiplier = 0.0174533;
+	double dlon = (stop.second * multiplier) - (start.second * multiplier);
+	double dlat = (stop.first * multiplier) - (start.first * multiplier);
+	double a = sin(dlat / 2) * (sin(dlat / 2)) + cos(start.first * multiplier) * cos(stop.first * multiplier) * sin(dlon / 2) * sin(dlon / 2);
+	double c = 2 * atan2(sqrt(a), sqrt(1 - a));
+	return 3961 * c;
+}
+
