@@ -96,7 +96,7 @@ std::pair<int, double> CalcEachFitScore(std::vector<int>& populationNums, int& i
 		j++;
 		return Haversine(longLats[j], longLats[j + 1]);									// Calculate the distance between each stop
 	});
-	double sum = std::accumulate(distances.begin(), distances.end(), 0.0f, [](const double& a, const double& b) {		// Add the distances up using Sum Vector
+	double sum = std::accumulate(distances.begin(), distances.end(), 0.0, [](const double& a, const double& b) {		// Add the distances up using Sum Vector
 		return a + b;
 	});
 	double sum2 = Haversine(longLats[longLats.size() - 1], longLats[0]);					// Get the distance from the last stop back to LAX
@@ -164,9 +164,9 @@ std::vector<double> GenerateProbVec(int popsize, std::vector<std::pair<int, doub
 	probabilities[selectedPairs[1].first] = probabilities[selectedPairs[1].first] * 6;
 	for (int i = 2; i < popsize / 2; i++)
 	{
-		probabilities[selectedPairs[i].first] *= 3.0f;
+		probabilities[selectedPairs[i].first] *= 3.0;
 	}
-	double sum = std::accumulate(probabilities.begin(), probabilities.end(), 0.0f, [](const double& a, const double& b) {
+	double sum = std::accumulate(probabilities.begin(), probabilities.end(), 0.0, [](const double& a, const double& b) {
 		return a + b;
 	});
 	std::transform(probabilities.begin(), probabilities.end(), probabilities.begin(), [&sum](double n)
