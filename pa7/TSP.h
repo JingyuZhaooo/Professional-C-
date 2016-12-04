@@ -26,6 +26,7 @@ std::vector<std::pair<int, double>> ComputeFitness(std::vector<std::vector<int>>
 std::pair<int, double> CalcEachFitScore(std::vector<int>& populationNums, int& i, std::vector<Location>& locations);
 std::vector<std::pair<double, double>> GetLongLats(std::vector<int> &populationNums, std::vector<Location> &locations);
 double Haversine(std::pair<double, double>& start, std::pair<double, double>& stop);
+void OutputFitness(std::vector<std::pair<int, double>>& fitness, std::ofstream& output);
 
 // Part 3
 std::vector<std::pair<int, int>> SelectedPairs(std::vector<std::pair<int, double>> fitness, int popsize, std::mt19937& randomGenerator);
@@ -34,3 +35,8 @@ std::vector<double> GenerateProbVec(int popsize, std::vector<std::pair<int, doub
 int ChooseParent(double rand, std::vector<double> probabilities);
 std::pair<int, int> MakePair(std::vector<double>& probabilities, std::mt19937& randomGenerator);
 void OutputSelection(std::vector<std::pair<int, int>> selectedPairs, std::ofstream& output);
+
+// Part 3
+std::vector<std::vector<int>> Crossover(std::mt19937& randomGenerator, int size, std::vector<std::pair<int, int>>& selectedPairs, std::vector<std::vector<int>>& initRandPop, double mutationchance);
+std::vector<int> CopyElements(std::vector<int>& parent1, std::vector<int>& parent2, int crossoverIndex);
+void OutputGenerations(std::vector<std::vector<int>> newPopulation, std::ofstream& output, int i);

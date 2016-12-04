@@ -14,7 +14,7 @@ int main(int argc, const char* argv[])
 	std::string inputfile = argv[1];
 	int popsize = std::stoi(argv[2]);
 	int generations = std::stoi(argv[3]);
-	double mutationchance = std::stoi(argv[4]) / 100;
+	double mutationchance = std::stod(argv[4]) / 100.0;
 	int seed = std::stoi(argv[5]);
 
 	// construct a std::mt19937 generator
@@ -43,19 +43,34 @@ int main(int argc, const char* argv[])
 
 	}
 
-	// Compute the fitness of each member of the population
+	// Part 2: Compute the fitness of each member of the population
 	std::vector<std::pair<int, double>> fitness = ComputeFitness(initRandPop, Location);
-	// Output the Fitness result
-	output << "FITNESS:" << std::endl;
-	for (auto &i : fitness)
+	OutputFitness(fitness, output);
+	
+	std::vector<std::vector<int>> newPopulation;
+	for (int i = 1; i <= generations; i++)
 	{
-		output << i.first << ":" << i.second << std::endl;
+		// Part 3
+		std::vector<std::pair<int, int>> selectedPairs = SelectedPairs(fitness, popsize, randomGenerator);
+		OutputSelection(selectedPairs, output);
+	
+		// Part 4
+		newPopulation = Crossover(randomGenerator, Location.size(), selectedPairs, initRandPop, mutationchance);
+		initRandPop = newPopulation;
+		OutputGenerations(newPopulation, output, i);
+
+		fitness = ComputeFitness(newPopulation, Location);
+		OutputFitness(fitness, output);
 	}
 	
-	// Part 3
-	std::vector<std::pair<int, int>> selectedPairs = SelectedPairs(fitness, popsize, randomGenerator);
-	OutputSelection(selectedPairs, output);
-	
-
+	// Output Solution
+	std::sort(fitness.begin(), fitness.end(), myComparator);
+	output << "SOLUTION:" << std::endl;
+	std::for_each(newPopulation[fitness[0].first].begin(), newPopulation[fitness[0].first].end(), [&output, &Location](int i)
+	{
+		output << Location[i].mName << std::endl;
+	});
+	output << Location[0].mName << std::endl;
+	output << "DISTANCE: " << fitness[0].second << " miles";
 	return 0;
 }

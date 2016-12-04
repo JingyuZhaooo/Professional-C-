@@ -118,11 +118,20 @@ std::vector<std::pair<double, double>> GetLongLats(std::vector<int>& populationN
 double Haversine(std::pair<double, double>& start, std::pair<double, double>& stop)
 {
 	double multiplier = 0.0174533;
-	double dlon = (stop.second * multiplier) - (start.second * multiplier);
-	double dlat = (stop.first * multiplier) - (start.first * multiplier);
+	double dlon = (stop.second - start.second) * multiplier;
+	double dlat = (stop.first - start.first) * multiplier;
 	double a = sin(dlat / 2) * (sin(dlat / 2)) + cos(start.first * multiplier) * cos(stop.first * multiplier) * sin(dlon / 2) * sin(dlon / 2);
 	double c = 2 * atan2(sqrt(a), sqrt(1 - a));
 	return 3961 * c;
+}
+
+void OutputFitness(std::vector<std::pair<int, double>>& fitness, std::ofstream & output)
+{
+	output << "FITNESS:" << std::endl;
+	for (auto &i : fitness)
+	{
+		output << i.first << ":" << i.second << std::endl;
+	}
 }
 
 std::vector<std::pair<int, int>> SelectedPairs(std::vector<std::pair<int, double>> fitness, int popsize, std::mt19937& randomGenerator)
@@ -179,7 +188,7 @@ int ChooseParent(double rand, std::vector<double> probabilities)
 	return index;
 }
 
-std::pair<int, int> MakePair(std::vector<double>& probabilities, std::mt19937 & randomGenerator)
+std::pair<int, int> MakePair(std::vector<double>& probabilities, std::mt19937& randomGenerator)
 {
 	std::uniform_real_distribution<double> dist(0, 1);
 	double rand1 = dist(randomGenerator);
@@ -196,6 +205,87 @@ void OutputSelection(std::vector<std::pair<int, int>> selectedPairs, std::ofstre
 	std::for_each(selectedPairs.begin(), selectedPairs.end(), [&output](std::pair<int, int> pair)
 	{
 		output << "(" << pair.first << "," << pair.second << ")" << std::endl;
+	});
+}
+
+std::vector<std::vector<int>> Crossover(std::mt19937& randomGenerator, int size, std::vector<std::pair<int, int>>& selectedPairs, std::vector<std::vector<int>>& initRandPop, double mutationchance)
+{
+	std::vector<std::vector<int>> retVal;
+	for (int i = 0; i < initRandPop.size(); i++)
+	{
+		std::uniform_int_distribution<int> dist(1, size - 2);
+		int crossoverIndex = dist(randomGenerator);
+		std::uniform_int_distribution<int> dist2(0, 1);
+		int sequence = dist2(randomGenerator);
+		if (sequence == 1)
+		{
+			std::vector<int> tempVec = CopyElements(initRandPop[selectedPairs[i].first], initRandPop[selectedPairs[i].second], crossoverIndex);
+			// Mutation
+			std::uniform_real_distribution<double> dist3(0, 1);
+			double mutationThreshold = dist3(randomGenerator);
+			if (mutationThreshold <= mutationchance)
+			{
+				std::uniform_int_distribution<int> dist4(1, size - 1);
+				int randFirstIndex = dist4(randomGenerator);
+				int randSecondIndex = dist4(randomGenerator);
+				std::swap(tempVec[randFirstIndex], tempVec[randSecondIndex]);
+			}
+
+			retVal.push_back(tempVec);
+		}
+		else
+		{
+			std::vector<int> tempVec = CopyElements(initRandPop[selectedPairs[i].second], initRandPop[selectedPairs[i].first], crossoverIndex);
+			// Mutation
+			std::uniform_real_distribution<double> dist3(0, 1);
+			double mutationThreshold = dist3(randomGenerator);
+			if (mutationThreshold <= mutationchance)
+			{
+				std::uniform_int_distribution<int> dist4(1, size - 1);
+				int randFirstIndex = dist4(randomGenerator);
+				int randSecondIndex = dist4(randomGenerator);
+				std::swap(tempVec[randFirstIndex], tempVec[randSecondIndex]);
+			}
+
+			retVal.push_back(tempVec);
+		}
+	}
+	return retVal;
+}
+
+std::vector<int> CopyElements(std::vector<int>& parent1, std::vector<int>& parent2, int crossoverIndex)
+{
+	std::vector<int> retVal;
+	std::copy_n(parent1.begin(), crossoverIndex + 1, std::back_inserter(retVal));
+	std::copy_if(parent2.begin(), parent2.end(), std::back_inserter(retVal), [&retVal](int& n)
+	{
+		bool found = true;
+		std::for_each(retVal.begin(), retVal.end(), [&n, &found](int& value)
+		{
+			if (n == value)
+			{
+				found = false;
+			}
+		});
+		return found;
+	});
+	return retVal;
+}
+
+void OutputGenerations(std::vector<std::vector<int>> newPopulation, std::ofstream & output, int i)
+{
+	output << "GENERATION: " << i << std::endl;
+	std::for_each(newPopulation.begin(), newPopulation.end(), [&output](std::vector<int> pop)
+	{
+		std::for_each(pop.begin(), pop.end(), [&pop, &output](int i)
+		{
+			output << i;
+			if (i != pop.back())
+			{
+				output << ",";
+			}
+		});
+		output << "\n";
 	});
 }
 
