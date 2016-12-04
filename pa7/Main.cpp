@@ -6,6 +6,8 @@
 #include <vector>
 #include <iomanip>
 
+void multiply3(double& a) { a = a * 3; };
+
 int main(int argc, const char* argv[])
 {
 	//parse out the input
@@ -49,5 +51,11 @@ int main(int argc, const char* argv[])
 	{
 		output << i.first << ":" << i.second << std::endl;
 	}
+	
+	// Part 3
+	std::vector<std::pair<int, int>> selectedPairs = SelectedPairs(fitness, popsize, randomGenerator);
+	OutputSelection(selectedPairs, output);
+	
+
 	return 0;
 }

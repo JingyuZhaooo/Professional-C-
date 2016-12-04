@@ -46,7 +46,7 @@ std::vector<std::vector<int>> GenerateInitRandPop(std::mt19937& random, int pops
 
 std::vector<int> ShuffleNumbers(std::mt19937 & random, int numOfLoc)
 {
-	std::vector<int> initialVec(numOfLoc);
+	std::vector<int> initialVec(numOfLoc);	// Create a new vector each time
 	int num = 0;
 	std::generate(initialVec.begin(), initialVec.end(), [&num]
 	{
@@ -96,21 +96,21 @@ std::pair<int, double> CalcEachFitScore(std::vector<int>& populationNums, int& i
 		j++;
 		return Haversine(longLats[j], longLats[j + 1]);									// Calculate the distance between each stop
 	});
-	double sum = Haversine(longLats[longLats.size() - 1], longLats[0]);					// Get the distance from the last stop back to LAX
-	sum = std::accumulate(distances.begin(), distances.end(), sum, [&sum](const double& a, const double& b) {		// Add the distances up using Sum Vector
+	double sum = std::accumulate(distances.begin(), distances.end(), 0.0f, [](const double& a, const double& b) {		// Add the distances up using Sum Vector
 		return a + b;
 	});
-	retVal.second = sum;
+	double sum2 = Haversine(longLats[longLats.size() - 1], longLats[0]);					// Get the distance from the last stop back to LAX
+	retVal.second = sum + sum2;
 	return retVal;
 }
 
-std::vector<std::pair<double, double>> GetLongLats(std::vector<int>& indices, std::vector<Location>& locations)
+std::vector<std::pair<double, double>> GetLongLats(std::vector<int>& populationNums, std::vector<Location>& locations)
 {
-	std::vector<std::pair<double, double>> longLats(indices.size());
+	std::vector<std::pair<double, double>> longLats(populationNums.size());
 	int i = -1;
-	std::generate(longLats.begin(), longLats.end(), [&indices, &i, &locations]() {
+	std::generate(longLats.begin(), longLats.end(), [&populationNums, &i, &locations]() {
 		i++;
-		return std::make_pair(locations[indices[i]].mLatitude, locations[indices[i]].mLongitude);	// Get the corresponding Latitude and Longitude
+		return std::make_pair(locations[populationNums[i]].mLatitude, locations[populationNums[i]].mLongitude);	// Get the corresponding Latitude and Longitude
 	});
 	return longLats;
 }
@@ -123,5 +123,79 @@ double Haversine(std::pair<double, double>& start, std::pair<double, double>& st
 	double a = sin(dlat / 2) * (sin(dlat / 2)) + cos(start.first * multiplier) * cos(stop.first * multiplier) * sin(dlon / 2) * sin(dlon / 2);
 	double c = 2 * atan2(sqrt(a), sqrt(1 - a));
 	return 3961 * c;
+}
+
+std::vector<std::pair<int, int>> SelectedPairs(std::vector<std::pair<int, double>> fitness, int popsize, std::mt19937& randomGenerator)
+{
+	std::sort(fitness.begin(), fitness.end(), myComparator);
+	std::vector<double> probabilities = GenerateProbVec(popsize, fitness);
+	std::vector<std::pair<int, int>> retVal;
+	// Pick two random parents to form a pair
+	for (int i = 0; i < popsize; i++)
+	{
+		std::pair<int, int> tempPair = MakePair(probabilities, randomGenerator);
+		retVal.push_back(tempPair);
+	}
+	return retVal;
+}
+
+bool myComparator(std::pair<int, double>& lhs, std::pair<int, double>& rhs)
+{
+	return lhs.second < rhs.second;
+}
+
+std::vector<double> GenerateProbVec(int popsize, std::vector<std::pair<int, double>> selectedPairs)
+{
+	std::vector<double> probabilities(popsize);
+	std::generate(probabilities.begin(), probabilities.end(), [&popsize]()
+	{
+		return 1.0 / popsize;
+	});
+	probabilities[selectedPairs[0].first] = probabilities[selectedPairs[0].first] * 6;
+	probabilities[selectedPairs[1].first] = probabilities[selectedPairs[1].first] * 6;
+	for (int i = 2; i < popsize / 2; i++)
+	{
+		probabilities[selectedPairs[i].first] *= 3.0f;
+	}
+	double sum = std::accumulate(probabilities.begin(), probabilities.end(), 0.0f, [](const double& a, const double& b) {
+		return a + b;
+	});
+	std::transform(probabilities.begin(), probabilities.end(), probabilities.begin(), [&sum](double n)
+	{
+		return n / sum;
+	});
+	return probabilities;
+}
+
+int ChooseParent(double rand, std::vector<double> probabilities)
+{
+	double sum = 0.0;
+	int index = -1;
+	while (sum < rand)
+	{
+		index++;
+		sum += probabilities[index];
+	}
+	return index;
+}
+
+std::pair<int, int> MakePair(std::vector<double>& probabilities, std::mt19937 & randomGenerator)
+{
+	std::uniform_real_distribution<double> dist(0, 1);
+	double rand1 = dist(randomGenerator);
+	int parentIndex = ChooseParent(rand1, probabilities);
+	double rand2 = dist(randomGenerator);
+	int parentIndex2 = ChooseParent(rand2, probabilities);
+	std::pair<int, int> retVal = std::make_pair(parentIndex, parentIndex2);
+	return retVal;
+}
+
+void OutputSelection(std::vector<std::pair<int, int>> selectedPairs, std::ofstream& output)
+{
+	output << "SELECTED PAIRS:" << std::endl;
+	std::for_each(selectedPairs.begin(), selectedPairs.end(), [&output](std::pair<int, int> pair)
+	{
+		output << "(" << pair.first << "," << pair.second << ")" << std::endl;
+	});
 }
 
